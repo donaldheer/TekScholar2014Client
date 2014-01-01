@@ -26,6 +26,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private float yScale = 1;
     private float yScalePrev = 0;
     private float yScale1 = 1;
+    public BluetoothConnection btConnection;
 
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -40,6 +41,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
         mScaleDetector = new ScaleGestureDetector(context, this);
         Log.d(TAG, "Constructing");
+
     }
     public ZoomSurface(Context context) {
         super(context);
@@ -149,6 +151,8 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     Log.d(TAG, "xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
 
     //Send scale update command to pi
+    MainActivity.btConnection.sendTestMessage();
+    MainActivity.btConnection.sendMessage("xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
 
     xScale = 1;
     yScale = 1;

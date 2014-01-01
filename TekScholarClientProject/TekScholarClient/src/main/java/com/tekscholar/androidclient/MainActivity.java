@@ -5,9 +5,12 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -20,6 +23,10 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static BluetoothConnection btConnection;
+    public int REQUEST_ENABLE_BT = 1;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,6 +51,23 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        }
+
+        //Determine if the bluetooth adapter is enabled, and if not, then enable it.
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        btConnection = new BluetoothConnection(this);
+        btConnection.connect();
+
+        registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
+        registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
     }
 
     @Override
@@ -58,7 +82,7 @@ public class MainActivity extends Activity
                 break;
             case 1:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, PlaceholderFragment.newInstance(position + 1))
+                        .replace(R.id.container, settings_Fragment.newInstance(position + 1))
                         .commit();
                 break;
             case 2:
@@ -162,6 +186,7 @@ public class MainActivity extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
     }
+
     /**
      * A zoom fragment containing a simple view.
      */
@@ -193,6 +218,7 @@ public class MainActivity extends Activity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.zoom_fragment, container, false);
             mZoomView = (ZoomSurface) rootView.findViewById(R.id.zoom_surfaceView);
+
 //            zoomView.setOnTouchListener(new View.OnTouchListener() {
 //                public boolean onTouch(View v, MotionEvent event) {
 //                    Log.d(TAG, "It touched me!");
@@ -221,5 +247,52 @@ public class MainActivity extends Activity
         }
     }
 
+
+    public static class settings_Fragment extends Fragment {
+        /**
+         * The fragment argument representing the section number for this
+         * fragment.
+         */
+        private static final String ARG_SECTION_NUMBER = "section_number";
+        /**
+         * Returns a new instance of this fragment for the given section
+         * number.
+         */
+        public static settings_Fragment newInstance(int sectionNumber) {
+            settings_Fragment fragment = new settings_Fragment();
+            Bundle args = new Bundle();
+            args.putInt(ARG_SECTION_NUMBER, sectionNumber);
+            fragment.setArguments(args);
+            return fragment;
+        }
+
+        public settings_Fragment() {
+        }
+
+        public void channelSelectHandler(){
+            Log.d("ADJ", "Button Pressed!");
+
+        }
+
+
+
+
+        @Override
+        public View onCreateView(LayoutInflater inflater, ViewGroup container,
+                                 Bundle savedInstanceState) {
+            View rootView = inflater.inflate(R.layout.settings_fragment, container, false);
+            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            return rootView;
+        }
+
+        @Override
+        public void onAttach(Activity activity) {
+            super.onAttach(activity);
+            ((MainActivity) activity).onSectionAttached(
+                    getArguments().getInt(ARG_SECTION_NUMBER));
+        }
+
+    }
 
 }

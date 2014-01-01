@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:mystyles="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent" android:layout_height="match_parent"
+    android:orientation="vertical"
+    android:background="#cccc">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@android:color/black"
+        android:layout_weight=".10"
+        style="@android:style/DeviceDefault.ButtonBar.AlertDialog">
+
+
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="wrap_content"
+            android:layout_height="match_parent">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:textAppearance="?android:attr/textAppearanceLarge"
+                android:text="Large Text"
+                android:id="@id/section_label"
+                android:textColor="@color/tektronix"
+                android:layout_gravity="center_horizontal" />
+
+            <Switch
+                style="@style/CouplingSwitch"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="Coupling"
+                android:id="@+id/switch1"
+                android:textColor="@color/tektronix" />
+
+            <Button
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:text="Edit Label"
+                android:id="@+id/button"
+                android:textColor="#ffffff" />
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="@color/tektronix"
+        android:layout_weight=".90">
+
+        <com.tekscholar.androidclient.ChannelSelect
+            style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="New Button"
+            android:layout_weight="1"
+            android:id="@+id/multiSwitch1"
+            mystyles:img_count="1"
+            mystyles:img0="@drawable/tek_button_1_gray"
+            mystyles:img1="@drawable/tek_button_1_color"
+            />
+
+        <com.tekscholar.androidclient.ChannelSelect
+            style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="New Button"
+            android:layout_weight="1"
+            android:id="@+id/multiSwitch2"
+            mystyles:img_count="2"
+            mystyles:img0="@drawable/tek_button_2_gray"
+            mystyles:img1="@drawable/tek_button_2_color"
+            />
+
+        <com.tekscholar.androidclient.ChannelSelect
+            style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="New Button"
+            android:layout_weight="1"
+            android:id="@+id/multiSwitch3"
+            mystyles:img_count="3"
+            mystyles:img0="@drawable/tek_button_3_gray"
+            mystyles:img1="@drawable/tek_button_3_color"
+            />
+
+        <com.tekscholar.androidclient.ChannelSelect
+            style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:text="New Button"
+            android:layout_weight="1"
+            android:id="@+id/multiSwitch4"
+            mystyles:img_count="3"
+            mystyles:img0="@drawable/tek_button_4_gray"
+            mystyles:img1="@drawable/tek_button_4_color"
+            />
+
+    </LinearLayout>
+
+</LinearLayout>
