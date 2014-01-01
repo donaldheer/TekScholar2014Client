@@ -46,20 +46,16 @@ class SqlScope:
 		self.writeScope('MESSAGE:SHOW "Saving profile to Cloud Scope Network"')
 		self.writeScope("MESSAGE:STATE ON")
 		self.closeScope()	
-		print(str(setStr + "\n\n\n\n"))	
 		setArray = setStr.replace(" :SET *RST;:", "").split(";:")#array of all commands
-		print(str(setArray) + "\n\n\n\n")
 		finalSetArray = []
  		for index, item in enumerate(setArray):
                         item = item.split(";")
                         _cmd = ''
-			print(item)  
                         for _index, _item in enumerate(item):
                                 for ind, sub in enumerate(_item.split(":")):
                                         if ind is not (len(_item.split(":")) - 1):
                                                 if sub is not ":" + _cmd:
                                                         _cmd = _cmd + ":" + sub
-						print(_cmd)
                                 _item = _cmd + ":" + _item.split(":")[len(_item.split(":")) - 1]
                                 finalSetArray.append(_item.replace("\n\r", ""))
                 for index, item in enumerate(finalSetArray):

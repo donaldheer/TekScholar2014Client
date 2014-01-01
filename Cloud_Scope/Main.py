@@ -8,6 +8,7 @@ import os
 from tekScopeSql import SqlScope
 from telnetclass import TekScope
 from FingerPrintScanner import Scanner
+from Bluetooth import Bluetooth
 
 #Button Input Variables
 GPIO.setmode(GPIO.BCM)
@@ -39,6 +40,9 @@ scanner.Init()
 
 #SQL scope initialization
 sqlscope = SqlScope()
+
+#Bluetooth Initialization
+bluetooth = Bluetooth()
 
 def DisplayMessage(message, width, height):
 	global menu_time
@@ -277,6 +281,11 @@ while True:
 			ClearMessage()
 		elif(menu_time < 30):
 			menu_time += 1
+
+	#Check for bluetooth commands and pipe them to scope
+	val = bluetooth.Recieve_Data()
+	if str(val) != "":
+		netscope.Write(str(val))
 
 	#Secret button commands
 	#Restart device
