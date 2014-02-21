@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/ExampleGui/ExampleGui.iml" filepath="$PROJECT_DIR$/ExampleGui/ExampleGui.iml" />
+      <module fileurl="file://$PROJECT_DIR$/ExampleGuiProject.iml" filepath="$PROJECT_DIR$/ExampleGuiProject.iml" />
+    </modules>
+  </component>
+</project>
+
