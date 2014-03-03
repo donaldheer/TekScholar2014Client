@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/TekScholarClient/TekScholarClient.iml" filepath="$PROJECT_DIR$/TekScholarClient/TekScholarClient.iml" />
+      <module fileurl="file://$PROJECT_DIR$/TekScholarClientProject.iml" filepath="$PROJECT_DIR$/TekScholarClientProject.iml" />
+    </modules>
+  </component>
+</project>
+
