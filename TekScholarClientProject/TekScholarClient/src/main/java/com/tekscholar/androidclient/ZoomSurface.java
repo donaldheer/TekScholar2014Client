@@ -20,6 +20,12 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private ScaleGestureDetector mScaleDetector;
     Context context;
     private float mScale = 1000;
+    private float xScale = 1;
+    private float xScalePrev = 0;
+    private float xScale1 = 1;
+    private float yScale = 1;
+    private float yScalePrev = 0;
+    private float yScale1 = 1;
 
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -97,7 +103,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
     @Override
     public boolean onScroll(MotionEvent motionEvent, MotionEvent motionEvent2, float v, float v2) {
-        Log.d(TAG, "It scrolled me!");
+        //Log.d(TAG, "It scrolled me!");
         return false;
     }
 
@@ -114,20 +120,40 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
     @Override
     public boolean onScale(ScaleGestureDetector scaleGestureDetector) {
-        Log.d(TAG, "It scaled me!");
-        Log.d(TAG, Float.toString(scaleGestureDetector.getScaleFactor()));
-        mScale = mScale * scaleGestureDetector.getScaleFactor();
+        //Log.d(TAG, "It scaled me!");
+        //Log.d(TAG, Float.toString(scaleGestureDetector.getScaleFactor()));
+        //mScale = mScale * scaleGestureDetector.getScaleFactor();
+        //Log.d(TAG, "X current: " + Float.toString(scaleGestureDetector.getCurrentSpanX()) + " X previous: " + Float.toString(scaleGestureDetector.getPreviousSpanX()));
+//        xScalePrev = scaleGestureDetector.getPreviousSpanX();
+//        yScalePrev = scaleGestureDetector.getPreviousSpanY();
+        xScale = (scaleGestureDetector.getCurrentSpanX() - scaleGestureDetector.getPreviousSpanX())/scaleGestureDetector.getPreviousSpanX() + 1;
+        yScale = (scaleGestureDetector.getCurrentSpanY() - scaleGestureDetector.getPreviousSpanY())/scaleGestureDetector.getPreviousSpanY() + 1;
+//        Log.d(TAG, "xScalePrev = " + Float.toString(xScalePrev) + " yScalePrev = " + Float.toString(yScalePrev));
         return true;
     }
 
     @Override
     public boolean onScaleBegin(ScaleGestureDetector scaleGestureDetector) {
-        Log.d(TAG, "It started scaling me!");
+        //Log.d(TAG, "It started scaling me!");
+        xScalePrev = scaleGestureDetector.getPreviousSpanX();
+        yScalePrev = scaleGestureDetector.getPreviousSpanY();
+        Log.d(TAG, "xScalePrev = " + Float.toString(xScalePrev) + " yScalePrev = " + Float.toString(yScalePrev));
         return true;
     }
 
     @Override
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-    Log.d(TAG, "It scaled me to " + Float.toString(mScale));
+    //Log.d(TAG, "It scaled me to " + Float.toString(mScale));
+    xScale = ((scaleGestureDetector.getCurrentSpanX() - xScalePrev)/xScalePrev) + 1;
+    yScale = ((scaleGestureDetector.getCurrentSpanY() - yScalePrev)/yScalePrev) + 1;
+    Log.d(TAG, "xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
+
+    //Send scale update command to pi
+
+    xScale = 1;
+    yScale = 1;
+    xScalePrev = 0;
+    yScalePrev = 0;
+
     }
 }

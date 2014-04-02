@@ -52,26 +52,29 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
         params.recycle();
         itr = images.iterator();
         //Set Default Image
-        if(itr.hasNext()){
-            setImageDrawable(itr.next());
-        }
+        //if(itr.hasNext()){
+        //    setImageDrawable(itr.next());
+        //}
+        setImageDrawable(images.get(state));
     }
 
     public Integer getState(){
         return state;
     }
 
+    public void setState(int mState) {
+        setImageDrawable(images.get(mState));
+    }
 
     @Override
     public void onClick(View view) {
         Log.d(TAG, "Clicked!");
-        if(itr.hasNext()){
-            setImageDrawable(itr.next());
+        if(state != 2){
             state++;
+            setState(state);
         } else {
-            itr = images.iterator();
-            setImageDrawable(itr.next());
             state = 0;
+            setState(state);
         }
         Log.d(TAG, Integer.toString(getState()));
     }
