@@ -5,7 +5,9 @@ import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.bluetooth.BluetoothAdapter;
 import android.content.Context;
+import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
 import android.view.Gravity;
@@ -20,6 +22,9 @@ import android.widget.TextView;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+
+    public static BluetoothConnection btConnection;
+    public int REQUEST_ENABLE_BT = 1;
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -44,6 +49,23 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
+
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        }
+
+        //Determine if the bluetooth adapter is enabled, and if not, then enable it.
+        if (!mBluetoothAdapter.isEnabled()) {
+            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+        }
+
+        btConnection = new BluetoothConnection(this);
+        btConnection.connect();
+
+        registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
+        registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
     }
 
     @Override
@@ -193,6 +215,7 @@ public class MainActivity extends Activity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.zoom_fragment, container, false);
             mZoomView = (ZoomSurface) rootView.findViewById(R.id.zoom_surfaceView);
+
 //            zoomView.setOnTouchListener(new View.OnTouchListener() {
 //                public boolean onTouch(View v, MotionEvent event) {
 //                    Log.d(TAG, "It touched me!");

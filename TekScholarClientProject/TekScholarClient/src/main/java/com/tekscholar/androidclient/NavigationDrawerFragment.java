@@ -11,6 +11,7 @@ import android.content.SharedPreferences;
 import android.content.res.Configuration;
 import android.os.Bundle;
 import android.preference.PreferenceManager;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
@@ -21,6 +22,8 @@ import android.widget.AdapterView;
 import android.widget.ArrayAdapter;
 import android.widget.ListView;
 import android.widget.Toast;
+
+import java.util.List;
 
 /**
  * Fragment used for managing interactions for and presentation of a navigation drawer.
@@ -245,7 +248,9 @@ public class NavigationDrawerFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_example:
-                Toast.makeText(getActivity(), "Example action.", Toast.LENGTH_SHORT).show();
+                List<String> messages = MainActivity.btConnection.readMessage();
+                Toast.makeText(getActivity(), messages.get(0) + messages.get(1), Toast.LENGTH_SHORT).show();
+
                 return true;
         }
 
