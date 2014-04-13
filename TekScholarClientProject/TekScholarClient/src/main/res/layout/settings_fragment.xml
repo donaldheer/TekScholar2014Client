@@ -57,6 +57,7 @@
 
         <com.tekscholar.androidclient.ChannelSelect
             style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="New Button"
@@ -69,6 +70,7 @@
 
         <com.tekscholar.androidclient.ChannelSelect
             style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="New Button"
@@ -81,6 +83,7 @@
 
         <com.tekscholar.androidclient.ChannelSelect
             style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="New Button"
@@ -93,6 +96,7 @@
 
         <com.tekscholar.androidclient.ChannelSelect
             style="?android:attr/buttonStyleSmall"
+            android:onClick= "channelSelectHandler"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
             android:text="New Button"

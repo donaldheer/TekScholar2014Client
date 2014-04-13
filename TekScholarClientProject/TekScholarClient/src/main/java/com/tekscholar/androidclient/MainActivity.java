@@ -10,6 +10,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Build;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,6 +26,7 @@ public class MainActivity extends Activity
 
     public static BluetoothConnection btConnection;
     public int REQUEST_ENABLE_BT = 1;
+
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -252,7 +254,6 @@ public class MainActivity extends Activity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
-
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -267,6 +268,14 @@ public class MainActivity extends Activity
 
         public settings_Fragment() {
         }
+
+        public void channelSelectHandler(){
+            Log.d("ADJ", "Button Pressed!");
+
+        }
+
+
+
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -283,6 +292,7 @@ public class MainActivity extends Activity
             ((MainActivity) activity).onSectionAttached(
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
+
     }
 
 }
