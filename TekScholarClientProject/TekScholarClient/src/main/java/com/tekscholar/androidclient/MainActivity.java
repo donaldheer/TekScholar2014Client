@@ -82,7 +82,7 @@ public class MainActivity extends Activity
                 break;
             case 1:
                 fragmentManager.beginTransaction()
-                        .replace(R.id.container, settings_Fragment.newInstance(position + 1))
+                        .replace(R.id.container, SettingsFragment.newInstance(position + 1))
                         .commit();
                 break;
             case 2:
@@ -248,7 +248,7 @@ public class MainActivity extends Activity
     }
 
 
-    public static class settings_Fragment extends Fragment {
+    public static class SettingsFragment extends Fragment {
         /**
          * The fragment argument representing the section number for this
          * fragment.
@@ -258,15 +258,15 @@ public class MainActivity extends Activity
          * Returns a new instance of this fragment for the given section
          * number.
          */
-        public static settings_Fragment newInstance(int sectionNumber) {
-            settings_Fragment fragment = new settings_Fragment();
+        public static SettingsFragment newInstance(int sectionNumber) {
+            SettingsFragment fragment = new SettingsFragment();
             Bundle args = new Bundle();
             args.putInt(ARG_SECTION_NUMBER, sectionNumber);
             fragment.setArguments(args);
             return fragment;
         }
 
-        public settings_Fragment() {
+        public SettingsFragment() {
         }
 
         public void channelSelectHandler(){
@@ -283,6 +283,50 @@ public class MainActivity extends Activity
             View rootView = inflater.inflate(R.layout.settings_fragment, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+
+            final ChannelSelect channelButton1 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch1);
+            final ChannelSelect channelButton2 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch2);
+            final ChannelSelect channelButton3 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch3);
+            final ChannelSelect channelButton4 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch4);
+
+            channelButton1.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    channelButton1.onClick(view);
+                    channelButton2.setState(0);
+                    channelButton3.setState(0);
+                    channelButton4.setState(0);
+                }
+            });
+            channelButton2.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    channelButton2.onClick(view);
+                    channelButton1.setState(0);
+                    channelButton3.setState(0);
+                    channelButton4.setState(0);
+                }
+            });
+            channelButton3.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    channelButton3.onClick(view);
+                    channelButton1.setState(0);
+                    channelButton2.setState(0);
+                    channelButton4.setState(0);
+                }
+            });
+            channelButton4.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    channelButton4.onClick(view);
+                    channelButton1.setState(0);
+                    channelButton2.setState(0);
+                    channelButton3.setState(0);
+                }
+            });
+
+            //Set buttons from bluetooth here
             return rootView;
         }
 
