@@ -292,7 +292,9 @@ public class MainActivity extends Activity
             channelButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    channelButton1.onClick(view);
+                    if(channelButton1.getState() != 1) {
+                        channelButton1.onClick(view);
+                    }
                     channelButton2.setState(0);
                     channelButton3.setState(0);
                     channelButton4.setState(0);
@@ -301,7 +303,9 @@ public class MainActivity extends Activity
             channelButton2.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    channelButton2.onClick(view);
+                    if(channelButton2.getState() != 1) {
+                        channelButton2.onClick(view);
+                    }
                     channelButton1.setState(0);
                     channelButton3.setState(0);
                     channelButton4.setState(0);
@@ -310,7 +314,9 @@ public class MainActivity extends Activity
             channelButton3.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    channelButton3.onClick(view);
+                    if(channelButton3.getState() != 1) {
+                        channelButton3.onClick(view);
+                    }
                     channelButton1.setState(0);
                     channelButton2.setState(0);
                     channelButton4.setState(0);
@@ -319,7 +325,9 @@ public class MainActivity extends Activity
             channelButton4.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    channelButton4.onClick(view);
+                    if(channelButton4.getState() != 1) {
+                        channelButton4.onClick(view);
+                    }
                     channelButton1.setState(0);
                     channelButton2.setState(0);
                     channelButton3.setState(0);
