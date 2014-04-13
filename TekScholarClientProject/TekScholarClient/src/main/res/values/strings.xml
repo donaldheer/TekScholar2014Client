@@ -9,5 +9,12 @@
     <string name="navigation_drawer_close">Close navigation drawer</string>
     <string name="action_example">Help</string>
     <string name="action_settings">Settings</string>
+    <string name="bandwidth_title">Bandwidth</string>
+    <string name="bandwidth_prompt">Select Bandwidth</string>
+    <string-array name="bandwidth_array">
+        <item>350MHz</item>
+        <item>250MHz</item>
+        <item>20MHz</item>
+    </string-array>
 
 </resources>

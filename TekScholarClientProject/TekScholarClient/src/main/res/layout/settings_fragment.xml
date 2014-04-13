@@ -18,7 +18,8 @@
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
-            android:layout_height="match_parent">
+            android:layout_height="match_parent"
+            android:weightSum="1">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -31,8 +32,8 @@
 
             <Switch
                 style="@style/CouplingSwitch"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_width="265dp"
+                android:layout_height="60dp"
                 android:text="Coupling"
                 android:id="@+id/switch1"
                 android:textColor="@color/tektronix" />
@@ -43,6 +44,32 @@
                 android:text="Edit Label"
                 android:id="@+id/button"
                 android:textColor="#ffffff" />
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:text="@string/bandwidth_title"
+                    android:id="@+id/textView"
+                    android:layout_gravity="center_horizontal"
+                    android:textColor="@android:color/background_light"
+                    android:editable="false" />
+
+                <Spinner
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:id="@+id/spinner"
+                    android:entries="@array/bandwidth_array"
+                    android:focusableInTouchMode="false"
+                    android:background="@android:color/darker_gray"
+                    android:spinnerMode="dialog"
+                    android:prompt="@string/bandwidth_prompt"/>
+            </LinearLayout>
 
         </LinearLayout>
 
