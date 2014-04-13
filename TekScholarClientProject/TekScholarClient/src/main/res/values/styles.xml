@@ -27,6 +27,18 @@
     </style>
 
 
+    <style name="CouplingSwitch">
+        <item name="android:textOff">"DC"</item>
+        <item name="android:textOn">"AC"</item>
+
+    </style>
+
+    <!-- Channel Select Switch settings -->
+    <declare-styleable name="style_channelSelectSwitch">
+        <attr name="img_count" format="integer"/>
+        <attr name="img0" format="string"/>
+        <attr name="img1" format="string"/>
+    </declare-styleable>
 
     <!-- ThreeWaySwitch settings -->
     <declare-styleable name="style_multiWaySwitch">

@@ -15,9 +15,9 @@ import java.util.Iterator;
 import java.util.List;
 
 /**
- * Created by aidandj on 3/2/14.
+ * Created by Chase on 4/13/14.
  */
-public class MultiImageSwitch extends ImageButton implements OnClickListener {
+public class ChannelSelect extends ImageButton implements OnClickListener {
 
     private static final String TAG = "ADJ";
     int imageSwitchCount;
@@ -27,12 +27,12 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
     Iterator<Drawable> itr;
 
 
-    public MultiImageSwitch(Context context) {
+    public ChannelSelect(Context context) {
         super(context);
         this.context = context;
         setOnClickListener(this);
     }
-    public MultiImageSwitch(Context context, AttributeSet attrs) {
+    public ChannelSelect(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
         setBackgroundColor(Color.TRANSPARENT);
@@ -42,13 +42,12 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
     }
 
     private void initImages(AttributeSet attrs) {
-        TypedArray params = getContext().obtainStyledAttributes(attrs,R.styleable.style_multiWaySwitch);
-        imageSwitchCount = params.getInteger(R.styleable.style_multiWaySwitch_image_count, 1);
+        TypedArray params = getContext().obtainStyledAttributes(attrs,R.styleable.style_channelSelectSwitch);
+        imageSwitchCount = params.getInteger(R.styleable.style_channelSelectSwitch_img_count, 1);
         Log.d(TAG, Integer.toString(imageSwitchCount));
         //Looping through strings of resources is really freaking hard so here is something that works
-        images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image0));
-        images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image1));
-        //images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image2)); //disabled to let switches have two states
+        images.add(params.getDrawable(R.styleable.style_channelSelectSwitch_img0));
+        images.add(params.getDrawable(R.styleable.style_channelSelectSwitch_img1));
         params.recycle();
         itr = images.iterator();
         //Set Default Image
