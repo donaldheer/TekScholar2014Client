@@ -420,10 +420,10 @@ public class MainActivity extends Activity
                     }
                     if(b){
                         //Waveform on
-                        btConnection.sendMessage(message + "1");
+                        btConnection.sendMessage(message + "1" +'\n');
                     } else {
                         //Waveform off
-                        btConnection.sendMessage(message + "0");
+                        btConnection.sendMessage(message + "0" +'\n');
                     }
                 }
             });
