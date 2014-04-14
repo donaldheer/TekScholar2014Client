@@ -62,14 +62,12 @@ public class MainActivity extends Activity
         }
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
-            Ndef ndefTag = Ndef.get(tag);
             Parcelable[] message = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
-            //Log.d("myapp",message);
             NdefMessage msg = (NdefMessage) message[0];
             mac = extractMessage(msg);
             BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
             if (mBluetoothAdapter == null) {
-                // Device does not support Bluetooth
+                Toast.makeText(this, "Device does not support Bluetooth", Toast.LENGTH_LONG).show();
             }
 
             //Determine if the bluetooth adapter is enabled, and if not, then enable it.
