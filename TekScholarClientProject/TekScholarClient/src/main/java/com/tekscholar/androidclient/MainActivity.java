@@ -53,6 +53,8 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        getActionBar().setIcon(R.drawable.ic_launcher_red);
+
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         Intent intent = getIntent();
         if (!mNfcAdapter.isEnabled())
@@ -87,6 +89,8 @@ public class MainActivity extends Activity
 
             registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
             registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
+
+            getActionBar().setIcon(R.drawable.ic_launcher);
         }
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
