@@ -7,8 +7,8 @@
         <option name="externalProjectPath" value="$PROJECT_DIR$" />
         <option name="modules">
           <set>
-            <option value="$PROJECT_DIR$" />
-            <option value="$PROJECT_DIR$/TekScholarClient" />
+            <option value="C:\Users\GPA\Documents\TekScholar2014Client\TekScholarClientProject" />
+            <option value="C:\Users\GPA\Documents\TekScholar2014Client\TekScholarClientProject\TekScholarClient" />
           </set>
         </option>
       </GradleProjectSettings>

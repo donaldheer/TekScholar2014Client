@@ -1,24 +1,24 @@
 package com.tekscholar.androidclient;
 
-import android.app.Activity;
-;
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
-import android.content.Context;
 import android.content.Intent;
-import android.os.Build;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
+import android.nfc.Tag;
+import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.os.Parcelable;
+import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
-import android.view.Gravity;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
-import android.support.v4.widget.DrawerLayout;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
@@ -27,11 +27,15 @@ import android.widget.Toast;
 
 import java.util.List;
 
+;
+
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
 
     public static BluetoothConnection btConnection;
     public int REQUEST_ENABLE_BT = 1;
+    private NfcAdapter mNfcAdapter;
+    public String mac;
 
 
     /**
@@ -49,6 +53,21 @@ public class MainActivity extends Activity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
 
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        Intent intent = getIntent();
+        if (!mNfcAdapter.isEnabled())
+        {
+            Toast.makeText(this, "Please activate NFC and press Back to return to the application!", Toast.LENGTH_LONG).show();
+            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+        }
+        if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
+            Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
+            Ndef ndefTag = Ndef.get(tag);
+            Parcelable[] message = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            //Log.d("myapp",message);
+            NdefMessage msg = (NdefMessage) message[0];
+            mac = extractMessage(msg);
+        }
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
         mTitle = getTitle();
@@ -69,8 +88,8 @@ public class MainActivity extends Activity
             startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
         }
 
-        btConnection = new BluetoothConnection(this);
-//        btConnection = new BluetoothConnection(this, "00:12:11:12:09:55");
+//        btConnection = new BluetoothConnection(this);
+        btConnection = new BluetoothConnection(this, mac);
         if(!btConnection.isConnected()) {
             Log.d("ADJ", "Bluetooth says its connected");
             btConnection.connect();
@@ -80,6 +99,14 @@ public class MainActivity extends Activity
         registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
     }
 
+    private String extractMessage(NdefMessage msg) {
+        byte[] array = null;
+        array = msg.getRecords()[0].getPayload();
+        String str = new String(array);
+        String str2 = str.substring(3);
+        Log.d("myapp",str2);
+        return str2;
+    }
     @Override
     public void onNavigationDrawerItemSelected(int position) {
         // update the main content by replacing fragments
