@@ -66,6 +66,7 @@ public class MainActivity extends Activity
         btConnection = new BluetoothConnection(this);
 //        btConnection = new BluetoothConnection(this, "00:12:11:12:09:55");
         if(!btConnection.isConnected()) {
+            Log.d("ADJ", "Bluetooth says its connected");
             btConnection.connect();
         }
 
