@@ -328,6 +328,7 @@ public class MainActivity extends Activity
         ChannelSelect channelButton3;
         ChannelSelect channelButton4;
         public int channelSelected;
+        TextView textView;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -357,7 +358,7 @@ public class MainActivity extends Activity
             View rootView = inflater.inflate(R.layout.settings_fragment, container, false);
 
 
-            TextView textView = (TextView) rootView.findViewById(R.id.section_label);
+            textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 
             channelButton1 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch1);
@@ -375,6 +376,7 @@ public class MainActivity extends Activity
                     channelButton3.setState(0);
                     channelButton4.setState(0);
                     channelSelected = 1;
+                    textView.setText("Channel 1");
                 }
             });
             channelButton2.setOnClickListener(new View.OnClickListener() {
@@ -387,6 +389,7 @@ public class MainActivity extends Activity
                     channelButton3.setState(0);
                     channelButton4.setState(0);
                     channelSelected = 2;
+                    textView.setText("Channel 2");
                 }
             });
             channelButton3.setOnClickListener(new View.OnClickListener() {
@@ -399,6 +402,7 @@ public class MainActivity extends Activity
                     channelButton2.setState(0);
                     channelButton4.setState(0);
                     channelSelected = 3;
+                    textView.setText("Channel 3");
                 }
             });
             channelButton4.setOnClickListener(new View.OnClickListener() {
@@ -411,6 +415,7 @@ public class MainActivity extends Activity
                     channelButton2.setState(0);
                     channelButton3.setState(0);
                     channelSelected = 4;
+                    textView.setText("Channel 4");
                 }
             });
 
