@@ -302,6 +302,7 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view) {
                         if (multiSwitch1.getState() != 1) {
+                            multiSwitch1.onClick(view);
                             btConnection.sendMessage("SELECT:CH1 1\n");
                         } else {
                             btConnection.sendMessage("SELECT:CH1 0\n");
@@ -315,6 +316,7 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view) {
                         if (multiSwitch2.getState() != 1) {
+                            multiSwitch2.onClick(view);
                             btConnection.sendMessage("SELECT:CH2 1\n");
                         } else {
                             btConnection.sendMessage("SELECT:CH2 0\n");
@@ -328,6 +330,7 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view) {
                         if (multiSwitch3.getState() != 1) {
+                            multiSwitch3.onClick(view);
                             btConnection.sendMessage("SELECT:CH3 1\n");
                         } else {
                             btConnection.sendMessage("SELECT:CH3 0\n");
@@ -341,6 +344,7 @@ public class MainActivity extends Activity
                     @Override
                     public void onClick(View view) {
                         if (multiSwitch4.getState() != 1) {
+                            multiSwitch4.onClick(view);
                             btConnection.sendMessage("SELECT:CH4 1\n");
                         } else {
                             btConnection.sendMessage("SELECT:CH4 0\n");
