@@ -48,7 +48,7 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
         //Looping through strings of resources is really freaking hard so here is something that works
         images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image0));
         images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image1));
-        images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image2)); //disabled to let switches have two states
+//        images.add(params.getDrawable(R.styleable.style_multiWaySwitch_image2)); //disabled to let switches have two states
         params.recycle();
         itr = images.iterator();
         //Set Default Image
@@ -63,13 +63,14 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
     }
 
     public void setState(int mState) {
+        state = mState;
         setImageDrawable(images.get(mState));
     }
 
     @Override
     public void onClick(View view) {
         Log.d(TAG, "Clicked!");
-        if(state != 2){
+        if(state != 1){
             state++;
             setState(state);
         } else {

@@ -267,6 +267,11 @@ public class MainActivity extends Activity
         private static final String ARG_SECTION_NUMBER = "section_number";
         private ZoomSurface mZoomView;
 
+        MultiImageSwitch multiSwitch1;
+        MultiImageSwitch multiSwitch2;
+        MultiImageSwitch multiSwitch3;
+        MultiImageSwitch multiSwitch4;
+
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -288,6 +293,66 @@ public class MainActivity extends Activity
             View rootView = inflater.inflate(R.layout.zoom_fragment, container, false);
             mZoomView = (ZoomSurface) rootView.findViewById(R.id.zoom_surfaceView);
 
+            multiSwitch1 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch1);
+            multiSwitch2 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch2);
+            multiSwitch3 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch3);
+            multiSwitch4 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch4);
+            try {
+                multiSwitch1.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (multiSwitch1.getState() != 1) {
+                            btConnection.sendMessage("SELECT:CH1 1\n");
+                        } else {
+                            btConnection.sendMessage("SELECT:CH1 0\n");
+                        }
+                        multiSwitch2.setState(0);
+                        multiSwitch3.setState(0);
+                        multiSwitch4.setState(0);
+                    }
+                });
+                multiSwitch2.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (multiSwitch2.getState() != 1) {
+                            btConnection.sendMessage("SELECT:CH2 1\n");
+                        } else {
+                            btConnection.sendMessage("SELECT:CH2 0\n");
+                        }
+                        multiSwitch1.setState(0);
+                        multiSwitch3.setState(0);
+                        multiSwitch4.setState(0);
+                    }
+                });
+                multiSwitch3.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (multiSwitch3.getState() != 1) {
+                            btConnection.sendMessage("SELECT:CH3 1\n");
+                        } else {
+                            btConnection.sendMessage("SELECT:CH3 0\n");
+                        }
+                        multiSwitch1.setState(0);
+                        multiSwitch2.setState(0);
+                        multiSwitch4.setState(0);
+                    }
+                });
+                multiSwitch4.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        if (multiSwitch4.getState() != 1) {
+                            btConnection.sendMessage("SELECT:CH4 1\n");
+                        } else {
+                            btConnection.sendMessage("SELECT:CH4 0\n");
+                        }
+                        multiSwitch1.setState(0);
+                        multiSwitch2.setState(0);
+                        multiSwitch3.setState(0);
+                    }
+                });
+            } catch(Exception e) {
+                e.printStackTrace();
+            }
 //            zoomView.setOnTouchListener(new View.OnTouchListener() {
 //                public boolean onTouch(View v, MotionEvent event) {
 //                    Log.d(TAG, "It touched me!");
