@@ -99,31 +99,34 @@ public class MainActivity extends Activity
         mNavigationDrawerFragment.setUp(
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
-        if(!btConnection.isConnected()) {
-//FOR DEBUGGING
-            BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            if (mBluetoothAdapter == null) {
-                // Device does not support Bluetooth
-            }
-
-            //Determine if the bluetooth adapter is enabled, and if not, then enable it.
-            if (!mBluetoothAdapter.isEnabled()) {
-                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-            }
-
-            btConnection = new BluetoothConnection(this);
-//        btConnection = new BluetoothConnection(this, mac);
+        try {
             if (!btConnection.isConnected()) {
-                Log.d("ADJ", "Bluetooth says its connected");
-                btConnection.connect();
+//FOR DEBUGGING
+                BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                if (mBluetoothAdapter == null) {
+                    // Device does not support Bluetooth
+                }
+
+                //Determine if the bluetooth adapter is enabled, and if not, then enable it.
+                if (!mBluetoothAdapter.isEnabled()) {
+                    Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                    startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+                }
+
+                btConnection = new BluetoothConnection(this);
+//        btConnection = new BluetoothConnection(this, mac);
+                if (!btConnection.isConnected()) {
+                    Log.d("ADJ", "Bluetooth says its connected");
+                    btConnection.connect();
+                }
+
+                registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
+                registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
+                //END FOR DEBUGGING
             }
-
-            registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
-            registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
-            //END FOR DEBUGGING
+        } catch(Exception e){
+            e.printStackTrace();
         }
-
 
     }
 
