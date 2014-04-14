@@ -69,7 +69,7 @@ public class MultiImageSwitch extends ImageButton implements OnClickListener {
     @Override
     public void onClick(View view) {
         Log.d(TAG, "Clicked!");
-        if(state != 1){
+        if(state != 2){
             state++;
             setState(state);
         } else {

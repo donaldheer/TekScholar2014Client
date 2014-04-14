@@ -62,6 +62,7 @@ public class ChannelSelect extends ImageButton implements OnClickListener {
     }
 
     public void setState(int mState) {
+        state = mState;
         setImageDrawable(images.get(mState));
     }
 
