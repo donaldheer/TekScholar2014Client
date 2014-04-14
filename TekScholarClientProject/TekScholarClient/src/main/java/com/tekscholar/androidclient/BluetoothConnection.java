@@ -38,6 +38,7 @@ public class BluetoothConnection {
     public BluetoothDevice remoteDevice;
     public boolean connected = false;
     public List<String> commandsArray = new ArrayList<String>();
+    BluetoothSocket btSocket;
 
     public BroadcastReceiver mPairingReceiver = new BroadcastReceiver() {
         @Override
@@ -91,11 +92,33 @@ public class BluetoothConnection {
         remoteDevice.createBond();
     }
 
+    public BluetoothConnection(Context context, String serverMac) {
+        this.context = context;
+        //Get the default bluetooth adapter
+        BluetoothAdapter mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+        }
+
+        //Determine if the bluetooth adapter is enabled, and if not, then enable it.
+//        if (!mBluetoothAdapter.isEnabled()) {
+//            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+//            startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+//        }
+
+        remoteDevice = mBluetoothAdapter.getRemoteDevice(serverMac);
+
+        Log.d(TAG, pin.toString());
+
+//        registerReceiver(mPairingReceiver, pairingRequestIntent);
+//        registerReceiver(mBondReceiver, connectedIntent);
+        remoteDevice.createBond();
+    }
+
     public void connect() {
         Log.d(TAG, Boolean.toString(connected));
         Log.d(TAG, Integer.toString(remoteDevice.getBondState()));
         if(remoteDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
-            BluetoothSocket btSocket;
             try {
 
                 btSocket = remoteDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
@@ -177,7 +200,8 @@ public class BluetoothConnection {
     }
 
     public boolean isConnected(){
-        return connected;
+        return btSocket.isConnected();
+//        return connected;
     }
 
     public byte[] convertPinToBytes(String pin) {

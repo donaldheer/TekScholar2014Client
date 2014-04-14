@@ -64,7 +64,10 @@ public class MainActivity extends Activity
         }
 
         btConnection = new BluetoothConnection(this);
-        btConnection.connect();
+//        btConnection = new BluetoothConnection(this, "00:12:11:12:09:55");
+        if(!btConnection.isConnected()) {
+            btConnection.connect();
+        }
 
         registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
         registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
@@ -345,6 +348,18 @@ public class MainActivity extends Activity
                     getArguments().getInt(ARG_SECTION_NUMBER));
         }
 
+    }
+
+    @Override
+    protected void onResume(){
+        super.onResume();
+    }
+
+    @Override
+    protected void onStop(){
+        super.onStop();
+        unregisterReceiver(btConnection.mPairingReceiver);
+        unregisterReceiver(btConnection.mBondReceiver);
     }
 
 }
