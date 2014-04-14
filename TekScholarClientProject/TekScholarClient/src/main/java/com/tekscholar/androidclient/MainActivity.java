@@ -477,22 +477,21 @@ public class MainActivity extends Activity
     }
 
     @Override
-    protected void onStop(){
+    protected void onStop() {
         super.onStop();
-        if(btConnection.isConnected()){
-            try {
+        try {
+            if (btConnection.isConnected()) {
+
                 unregisterReceiver(btConnection.mPairingReceiver);
                 unregisterReceiver(btConnection.mBondReceiver);
-                try {
-                    btConnection.btSocket.close();
-                } catch (IOException e) {
-                    e.printStackTrace();
-                }
-            } catch(Exception e){
-                e.printStackTrace();
+
+                btConnection.btSocket.close();
             }
+        } catch (Exception e) {
+            e.printStackTrace();
         }
 
     }
+
 
 }
