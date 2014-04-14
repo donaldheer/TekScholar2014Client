@@ -62,7 +62,7 @@
 
                 <Spinner
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
+                    android:layout_height="28dp"
                     android:id="@+id/spinner"
                     android:entries="@array/bandwidth_array"
                     android:focusableInTouchMode="false"
