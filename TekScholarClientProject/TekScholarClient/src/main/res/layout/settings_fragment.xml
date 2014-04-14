@@ -12,14 +12,16 @@
         android:layout_height="fill_parent"
         android:background="@android:color/black"
         android:layout_weight=".10"
-        style="@android:style/DeviceDefault.ButtonBar.AlertDialog">
+        style="@android:style/DeviceDefault.ButtonBar.AlertDialog"
+        android:weightSum="1">
 
 
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="wrap_content"
             android:layout_height="match_parent"
-            android:weightSum="1">
+            android:weightSum="1"
+            android:layout_weight="0.50">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -29,6 +31,13 @@
                 android:id="@id/section_label"
                 android:textColor="@color/tektronix"
                 android:layout_gravity="center_horizontal" />
+
+            <Switch
+                android:layout_width="265dp"
+                android:layout_height="wrap_content"
+                android:text="@string/channel_switch"
+                android:id="@+id/switch2"
+                android:textColor="@android:color/background_light" />
 
             <Switch
                 style="@style/CouplingSwitch"
@@ -61,7 +70,7 @@
                     android:editable="false" />
 
                 <Spinner
-                    android:layout_width="match_parent"
+                    android:layout_width="166dp"
                     android:layout_height="28dp"
                     android:id="@+id/spinner"
                     android:entries="@array/bandwidth_array"
