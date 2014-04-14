@@ -202,11 +202,6 @@ public class BluetoothConnection {
     }
 
     public boolean isConnected(){
-        try {
-            connected = btSocket.isConnected();
-        } catch(Exception e) {
-            e.printStackTrace();
-        }
         return connected;
 //        return connected;
     }
