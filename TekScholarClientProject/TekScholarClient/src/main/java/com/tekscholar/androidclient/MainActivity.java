@@ -25,6 +25,7 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.IOException;
 import java.util.List;
 
 ;
@@ -474,8 +475,16 @@ public class MainActivity extends Activity
     @Override
     protected void onStop(){
         super.onStop();
-        unregisterReceiver(btConnection.mPairingReceiver);
-        unregisterReceiver(btConnection.mBondReceiver);
+        if(btConnection.isConnected()){
+            unregisterReceiver(btConnection.mPairingReceiver);
+            unregisterReceiver(btConnection.mBondReceiver);
+            try {
+                btConnection.btSocket.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+        }
+
     }
 
 }
