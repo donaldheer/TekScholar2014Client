@@ -359,12 +359,14 @@ public class MainActivity extends Activity
 
 
             textView = (TextView) rootView.findViewById(R.id.section_label);
-            textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
+            textView.setText("Channel 1");
 
             channelButton1 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch1);
             channelButton2 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch2);
             channelButton3 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch3);
             channelButton4 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch4);
+
+            channelButton1.setState(1);
 
             channelButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
