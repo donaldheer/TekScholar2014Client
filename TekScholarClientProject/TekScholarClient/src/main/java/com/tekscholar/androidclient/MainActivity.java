@@ -479,11 +479,15 @@ public class MainActivity extends Activity
     protected void onStop(){
         super.onStop();
         if(btConnection.isConnected()){
-            unregisterReceiver(btConnection.mPairingReceiver);
-            unregisterReceiver(btConnection.mBondReceiver);
             try {
-                btConnection.btSocket.close();
-            } catch (IOException e) {
+                unregisterReceiver(btConnection.mPairingReceiver);
+                unregisterReceiver(btConnection.mBondReceiver);
+                try {
+                    btConnection.btSocket.close();
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            } catch(Exception e){
                 e.printStackTrace();
             }
         }
