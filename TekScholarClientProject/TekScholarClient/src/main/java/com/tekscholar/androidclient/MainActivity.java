@@ -19,6 +19,8 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.CompoundButton;
+import android.widget.Switch;
 import android.widget.TextView;
 
 public class MainActivity extends Activity
@@ -258,6 +260,11 @@ public class MainActivity extends Activity
          * fragment.
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
+        ChannelSelect channelButton1;
+        ChannelSelect channelButton2;
+        ChannelSelect channelButton3;
+        ChannelSelect channelButton4;
+        public int channelSelected;
         /**
          * Returns a new instance of this fragment for the given section
          * number.
@@ -285,13 +292,15 @@ public class MainActivity extends Activity
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.settings_fragment, container, false);
+
+
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
 
-            final ChannelSelect channelButton1 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch1);
-            final ChannelSelect channelButton2 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch2);
-            final ChannelSelect channelButton3 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch3);
-            final ChannelSelect channelButton4 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch4);
+            channelButton1 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch1);
+            channelButton2 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch2);
+            channelButton3 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch3);
+            channelButton4 = (ChannelSelect) rootView.findViewById(R.id.settingsMultiSwitch4);
 
             channelButton1.setOnClickListener(new View.OnClickListener() {
                 @Override
@@ -302,6 +311,7 @@ public class MainActivity extends Activity
                     channelButton2.setState(0);
                     channelButton3.setState(0);
                     channelButton4.setState(0);
+                    channelSelected = 1;
                 }
             });
             channelButton2.setOnClickListener(new View.OnClickListener() {
@@ -313,6 +323,7 @@ public class MainActivity extends Activity
                     channelButton1.setState(0);
                     channelButton3.setState(0);
                     channelButton4.setState(0);
+                    channelSelected = 2;
                 }
             });
             channelButton3.setOnClickListener(new View.OnClickListener() {
@@ -324,6 +335,7 @@ public class MainActivity extends Activity
                     channelButton1.setState(0);
                     channelButton2.setState(0);
                     channelButton4.setState(0);
+                    channelSelected = 3;
                 }
             });
             channelButton4.setOnClickListener(new View.OnClickListener() {
@@ -335,10 +347,44 @@ public class MainActivity extends Activity
                     channelButton1.setState(0);
                     channelButton2.setState(0);
                     channelButton3.setState(0);
+                    channelSelected = 4;
                 }
             });
 
             //Set buttons from bluetooth here
+
+            Switch waveFormDisplaySwitch = (Switch) rootView.findViewById(R.id.switch2);
+            waveFormDisplaySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+                @Override
+                public void onCheckedChanged(CompoundButton compoundButton, boolean b) {
+                    String message;
+                    switch(channelSelected){
+                        case 1:
+                            message = "SELECT:CH1 ";
+                            break;
+                        case 2:
+                            message = "SELECT:CH2 ";
+                            break;
+                        case 3:
+                            message = "SELECT:CH3 ";
+                            break;
+                        case 4:
+                            message = "SELECT:CH4 ";
+                            break;
+                        default:
+                            message = "";
+                            break;
+                    }
+                    if(b){
+                        //Waveform on
+                        btConnection.sendMessage(message + "1");
+                    } else {
+                        //Waveform off
+                        btConnection.sendMessage(message + "0");
+                    }
+                }
+            });
+
             return rootView;
         }
 
