@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.widget.Toast;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -150,7 +151,8 @@ public class BluetoothConnection {
         if(connected){
             writeBytes(message.getBytes());
         } else {
-            connect();
+//            Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
+//            Toast.make
         }
     }
 
