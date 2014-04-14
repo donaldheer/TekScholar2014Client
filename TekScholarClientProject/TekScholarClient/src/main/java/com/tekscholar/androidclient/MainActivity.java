@@ -19,9 +19,13 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.support.v4.widget.DrawerLayout;
 import android.widget.ArrayAdapter;
+import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
+import android.widget.Toast;
+
+import java.util.List;
 
 public class MainActivity extends Activity
         implements NavigationDrawerFragment.NavigationDrawerCallbacks {
@@ -352,6 +356,17 @@ public class MainActivity extends Activity
             });
 
             //Set buttons from bluetooth here
+
+            Button testButton = (Button) rootView.findViewById(R.id.testbutton);
+            testButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    btConnection.sendMessage("SELECT:CH1?");
+                    List<String> message = btConnection.readMessage();
+                    Log.d("ADJ", message.get(0));
+                }
+            });
+
 
             Switch waveFormDisplaySwitch = (Switch) rootView.findViewById(R.id.switch2);
             waveFormDisplaySwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
