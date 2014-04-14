@@ -58,7 +58,7 @@ public class MainActivity extends Activity
         if (!mNfcAdapter.isEnabled())
         {
             Toast.makeText(this, "Please activate NFC and press Back to return to the application!", Toast.LENGTH_LONG).show();
-            startActivity(new Intent(android.provider.Settings.ACTION_WIRELESS_SETTINGS));
+            startActivity(new Intent(android.provider.Settings.ACTION_SETTINGS));
         }
         if (NfcAdapter.ACTION_NDEF_DISCOVERED.equals(intent.getAction())){
             Tag tag = intent.getParcelableExtra(NfcAdapter.EXTRA_TAG);
