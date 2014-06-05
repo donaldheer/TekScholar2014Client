@@ -149,6 +149,7 @@ public class BluetoothConnection {
         } else {
 //            Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
 //            Toast.make
+            Log.d("ADJ", "Not connected");
         }
     }
 

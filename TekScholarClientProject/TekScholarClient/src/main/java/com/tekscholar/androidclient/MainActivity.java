@@ -9,7 +9,6 @@ import android.content.Intent;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
-import android.nfc.tech.Ndef;
 import android.os.Bundle;
 import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
@@ -25,18 +24,20 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import java.io.IOException;
+import java.util.ArrayList;
 import java.util.List;
 
-;
 
 public class MainActivity extends Activity
-        implements NavigationDrawerFragment.NavigationDrawerCallbacks {
+        implements NavigationDrawerFragment.NavigationDrawerCallbacks, ContinuousDictationFragment.ContinuousDictationFragmentResultsCallback {
 
     public static BluetoothConnection btConnection;
     public int REQUEST_ENABLE_BT = 1;
     private NfcAdapter mNfcAdapter;
     public String mac;
+    public static boolean btConnected = false;
+    private ContinuousDictationFragment mContinuousDictationFragment;
+    private String result;
 
 
     /**
@@ -82,10 +83,16 @@ public class MainActivity extends Activity
 
 //        btConnection = new BluetoothConnection(this);
             btConnection = new BluetoothConnection(this, mac);
-            if(!btConnection.isConnected()) {
-                Log.d("ADJ", "Bluetooth says its connected");
+            for(int i = 0; i < 10; ++i) {
                 btConnection.connect();
+                if(btConnection.isConnected()){
+                    btConnected = true;
+                    break;
+                }
             }
+            Log.d("ADJ", "Bluetooth says its connected");
+
+
 
             registerReceiver(btConnection.mPairingReceiver, btConnection.pairingRequestIntent);
             registerReceiver(btConnection.mBondReceiver, btConnection.connectedIntent);
@@ -303,9 +310,11 @@ public class MainActivity extends Activity
                     public void onClick(View view) {
                         if (multiSwitch1.getState() != 1) {
                             multiSwitch1.onClick(view);
-                            btConnection.sendMessage("SELECT:CH1 1\n");
+                            sendBTMessage("SELECT:CH1 1\n");
+
                         } else {
-                            btConnection.sendMessage("SELECT:CH1 0\n");
+                               sendBTMessage("SELECT:CH1 0\n");
+
                         }
                         multiSwitch2.setState(0);
                         multiSwitch3.setState(0);
@@ -547,9 +556,23 @@ public class MainActivity extends Activity
 
     }
 
-    @Override
-    protected void onResume(){
+    public static void sendBTMessage(String msg){
+        if(btConnected){
+            btConnection.sendMessage(msg);
+        } else {
+            //Toast.makeText(super, "Bluetooth Not Connected", Toast.LENGTH_LONG).show();
+            Log.d("ADJ", "Not Connected");
+        }
+    }
+
+    public void onPause() {
+        super.onPause();
+        mContinuousDictationFragment.stopVoiceRecognition();
+    }
+
+    public void onResume(){
         super.onResume();
+        mContinuousDictationFragment.startVoiceRecognitionCycle();
     }
 
     @Override
@@ -567,6 +590,22 @@ public class MainActivity extends Activity
             e.printStackTrace();
         }
 
+    }
+
+    @Override
+    public void onDictationStart() {
+        //Toast.makeText(this, "Start", Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onResults(ContinuousDictationFragment delegate, ArrayList<String> dictationResults) {
+        result = dictationResults.get(0);
+        Toast.makeText(this,result,Toast.LENGTH_LONG).show();
+    }
+
+    @Override
+    public void onDictationFinish() {
+        //Toast.makeText(this, "Stop", Toast.LENGTH_LONG).show();
     }
 
 
