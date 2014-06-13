@@ -48,7 +48,7 @@ public class BluetoothConnection {
                 Log.d(TAG, "Yay");
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 device.setPin(convertPinToBytes(pinString));
-                device.setPairingConfirmation(true);
+                device.setPairingConfirmation(false);
             }
         }
     };
@@ -77,7 +77,6 @@ public class BluetoothConnection {
         if (mBluetoothAdapter == null) {
             // Device does not support Bluetooth
         }
-
         //Determine if the bluetooth adapter is enabled, and if not, then enable it.
 //        if (!mBluetoothAdapter.isEnabled()) {
 //            Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
@@ -120,6 +119,11 @@ public class BluetoothConnection {
         Log.d(TAG, Boolean.toString(connected));
         Log.d(TAG, Integer.toString(remoteDevice.getBondState()));
         if(remoteDevice.getBondState() == BluetoothDevice.BOND_BONDED) {
+//            try {
+//                btSocket.close();
+//            } catch(Exception e){
+//                e.printStackTrace();
+//            }
             try {
 
                 btSocket = remoteDevice.createRfcommSocketToServiceRecord(UUID.fromString("00001101-0000-1000-8000-00805f9b34fb"));
@@ -147,6 +151,41 @@ public class BluetoothConnection {
         }
     }
 
+    public String receiveMessage(){
+        int c;
+        StringBuilder message= new StringBuilder();
+        commandsArray.add("fail");
+        if(connected) {
+            commandsArray.clear();
+            while(commandsArray.isEmpty()) {
+                try {
+                    if (tmpIn.ready()) {
+                        while ((c = tmpIn.read()) != -1) {
+                            //Since c is an integer, cast it to a char. If it isn't -1, it will be in the correct range of char.
+
+                            if (((c == '\r') | (c == '\n')) && (message.length() != 0)) {
+                                commandsArray.add(message.toString());
+                                message.delete(0, message.length());
+                            } else {
+                                message.append((char) c);
+                            }
+                            if (!tmpIn.ready()) {
+                                break;
+                            }
+                        }
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                }
+            }
+        } else {
+            connect();
+            commandsArray.add("not connected");
+        }
+
+        return commandsArray.get(0);
+    }
+
     public void sendMessage(String message){
         if(connected){
             writeBytes(message.getBytes());
@@ -167,7 +206,7 @@ public class BluetoothConnection {
                     while ((c = tmpIn.read()) != -1) {
                         //Since c is an integer, cast it to a char. If it isn't -1, it will be in the correct range of char.
 
-                        if((c == '\n') && (message.length() != 0)){
+                        if(((c == '\r') | (c == '\n')) && (message.length() != 0)){
                             commandsArray.add(message.toString());
                             message.delete(0, message.length());
                         } else {
@@ -191,7 +230,7 @@ public class BluetoothConnection {
     }
 
     public void sendTestMessage() {
-        String test = "Test";
+        String test = ":Header 1\n";
         Log.d(TAG, test + " " + Boolean.toString(connected));
         if(connected) {
             writeBytes(test.getBytes());

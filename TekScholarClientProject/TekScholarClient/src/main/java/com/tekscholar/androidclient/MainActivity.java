@@ -6,17 +6,22 @@ import android.app.Fragment;
 import android.app.FragmentManager;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
+import android.graphics.Bitmap;
+import android.graphics.Canvas;
+import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.nfc.tech.Ndef;
 import android.os.Bundle;
+import android.os.Environment;
 import android.os.Parcelable;
 import android.support.v4.widget.DrawerLayout;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.Button;
@@ -25,7 +30,13 @@ import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import java.io.BufferedOutputStream;
+import java.io.File;
+import java.io.FileOutputStream;
 import java.io.IOException;
+import java.io.OutputStream;
+import java.text.SimpleDateFormat;
+import java.util.Date;
 import java.util.List;
 
 ;
@@ -48,6 +59,8 @@ public class MainActivity extends Activity
      * Used to store the last screen title. For use in {@link #restoreActionBar()}.
      */
     private CharSequence mTitle;
+    public static boolean[] chActive;
+    public int numOfCh = 4;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -55,6 +68,19 @@ public class MainActivity extends Activity
         setContentView(R.layout.activity_main);
 
         getActionBar().setIcon(R.drawable.ic_launcher_red);
+
+//        File storageDir = new File(
+//                Environment.getExternalStoragePublicDirectory(
+//                        Environment.DIRECTORY_PICTURES
+//                ),
+//                "TekShots"
+//        );
+//        galleryAddPic(storageDir);
+
+        chActive = new boolean[numOfCh];
+        for(int i = 0; i < numOfCh; i++){
+            chActive[i] = false;
+        }
 
         mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
         Intent intent = getIntent();
@@ -210,6 +236,13 @@ public class MainActivity extends Activity
         switch (item.getItemId()) {
             case R.id.action_settings:
                 return true;
+            case R.id.action_test:
+                btConnection.sendMessage("horizontal:scale?\n");
+//                btConnection.sendMessage("123456789\n");
+//                btConnection.sendMessage("123456789\n");
+//                btConnection.sendMessage("123456789\n");
+//                btConnection.sendMessage("123456789\n");
+                return true;
         }
         return super.onOptionsItemSelected(item);
     }
@@ -241,7 +274,7 @@ public class MainActivity extends Activity
 
         @Override
         public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                Bundle savedInstanceState) {
+                                 Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.fragment_main, container, false);
             TextView textView = (TextView) rootView.findViewById(R.id.section_label);
             textView.setText(Integer.toString(getArguments().getInt(ARG_SECTION_NUMBER)));
@@ -266,11 +299,16 @@ public class MainActivity extends Activity
          */
         private static final String ARG_SECTION_NUMBER = "section_number";
         private ZoomSurface mZoomView;
+        private SurfaceHolder mZoomViewHolder;
 
         MultiImageSwitch multiSwitch1;
         MultiImageSwitch multiSwitch2;
         MultiImageSwitch multiSwitch3;
         MultiImageSwitch multiSwitch4;
+
+        Button startStopImage;
+        Button captureImage;
+        Button refreshImage;
 
         /**
          * Returns a new instance of this fragment for the given section
@@ -292,6 +330,7 @@ public class MainActivity extends Activity
                                  Bundle savedInstanceState) {
             View rootView = inflater.inflate(R.layout.zoom_fragment, container, false);
             mZoomView = (ZoomSurface) rootView.findViewById(R.id.zoom_surfaceView);
+            mZoomViewHolder = mZoomView.getHolder();
 
             multiSwitch1 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch1);
             multiSwitch2 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch2);
@@ -301,57 +340,69 @@ public class MainActivity extends Activity
                 multiSwitch1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        multiSwitch1.onClick(view);
                         if (multiSwitch1.getState() != 1) {
-                            multiSwitch1.onClick(view);
-                            btConnection.sendMessage("SELECT:CH1 1\n");
+
+//                            btConnection.sendMessage("SELECT:CH1 1\n");
+                            chActive[0] = true;
                         } else {
-                            btConnection.sendMessage("SELECT:CH1 0\n");
+//                            btConnection.sendMessage("SELECT:CH1 0\n");
+                            chActive[0] = false;
                         }
-                        multiSwitch2.setState(0);
-                        multiSwitch3.setState(0);
-                        multiSwitch4.setState(0);
+//                        multiSwitch2.setState(0);
+//                        multiSwitch3.setState(0);
+//                        multiSwitch4.setState(0);
                     }
                 });
                 multiSwitch2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        multiSwitch2.onClick(view);
                         if (multiSwitch2.getState() != 1) {
-                            multiSwitch2.onClick(view);
-                            btConnection.sendMessage("SELECT:CH2 1\n");
+
+//                            btConnection.sendMessage("SELECT:CH2 1\n");
+                            chActive[1] = true;
                         } else {
-                            btConnection.sendMessage("SELECT:CH2 0\n");
+//                            btConnection.sendMessage("SELECT:CH2 0\n");
+                            chActive[1] = false;
                         }
-                        multiSwitch1.setState(0);
-                        multiSwitch3.setState(0);
-                        multiSwitch4.setState(0);
+//                        multiSwitch1.setState(0);
+//                        multiSwitch3.setState(0);
+//                        multiSwitch4.setState(0);
                     }
                 });
                 multiSwitch3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        multiSwitch3.onClick(view);
                         if (multiSwitch3.getState() != 1) {
-                            multiSwitch3.onClick(view);
-                            btConnection.sendMessage("SELECT:CH3 1\n");
+
+//                            btConnection.sendMessage("SELECT:CH3 1\n");
+                            chActive[2] = true;
                         } else {
-                            btConnection.sendMessage("SELECT:CH3 0\n");
+//                            btConnection.sendMessage("SELECT:CH3 0\n");
+                            chActive[2] = false;
                         }
-                        multiSwitch1.setState(0);
-                        multiSwitch2.setState(0);
-                        multiSwitch4.setState(0);
+//                        multiSwitch1.setState(0);
+//                        multiSwitch2.setState(0);
+//                        multiSwitch4.setState(0);
                     }
                 });
                 multiSwitch4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
+                        multiSwitch4.onClick(view);
                         if (multiSwitch4.getState() != 1) {
-                            multiSwitch4.onClick(view);
-                            btConnection.sendMessage("SELECT:CH4 1\n");
+
+//                            btConnection.sendMessage("SELECT:CH4 1\n");
+                            chActive[3] = true;
                         } else {
-                            btConnection.sendMessage("SELECT:CH4 0\n");
+//                            btConnection.sendMessage("SELECT:CH4 0\n");
+                            chActive[3] = false;
                         }
-                        multiSwitch1.setState(0);
-                        multiSwitch2.setState(0);
-                        multiSwitch3.setState(0);
+//                        multiSwitch1.setState(0);
+//                        multiSwitch2.setState(0);
+//                        multiSwitch3.setState(0);
                     }
                 });
             } catch(Exception e) {
@@ -373,6 +424,79 @@ public class MainActivity extends Activity
 //                    Log.d(TAG, "Section 3");
 //
 //            }
+
+            //Waveform control buttons
+            captureImage = (Button) rootView.findViewById(R.id.captureimage_button);
+            refreshImage = (Button) rootView.findViewById(R.id.refresh_button);
+            startStopImage = (Button) rootView.findViewById(R.id.startstop_button);
+
+            captureImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mZoomView.generatePoints();
+
+                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+                    String imageFileName = timeStamp + "_" + "tekShot";
+
+                    File storageDir = new File(
+                            Environment.getExternalStoragePublicDirectory(
+                                    Environment.DIRECTORY_PICTURES
+                            ),
+                            "TekShots"
+                    );
+
+                    if (storageDir != null) {
+                        if (! storageDir.mkdirs()) {
+                            if (! storageDir.exists()){
+                                Log.d("CameraSample", "failed to create directory");
+                                return;
+                            }
+                        }
+                    }
+
+                    try {
+                        File f = File.createTempFile(imageFileName, ".jpeg", storageDir);
+
+
+                    Bitmap bitmap = Bitmap.createBitmap(mZoomView.getWidth(), mZoomView.getHeight(), Bitmap.Config.ARGB_8888);
+
+                    mZoomView.draw(new Canvas(bitmap));
+                    try {
+                        OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+                        bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+                    } catch (IOException e) {
+                        Log.w("ADJ", e);
+                    }
+                        //MainActivity.galleryAddPic(f);
+                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+                        //File f = new File(mCurrentPhotoPath);
+                        Uri contentUri = Uri.fromFile(f);
+                        mediaScanIntent.setData(contentUri);
+                        getActivity().sendBroadcast(mediaScanIntent);
+                    } catch (Exception e){
+                        e.printStackTrace();
+                    }
+
+                }
+            });
+
+            refreshImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+                    mZoomView.generatePoints();
+                    Canvas temp = mZoomViewHolder.lockCanvas();
+                    mZoomView.draw(temp);
+                    mZoomViewHolder.unlockCanvasAndPost(temp);
+                    //mZoomView.paint();
+                }
+            });
+
+            startStopImage.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View view) {
+
+                }
+            });
 
             return rootView;
         }
@@ -396,7 +520,7 @@ public class MainActivity extends Activity
         ChannelSelect channelButton2;
         ChannelSelect channelButton3;
         ChannelSelect channelButton4;
-        public int channelSelected;
+        public int channelSelected = 1;
         TextView textView;
         /**
          * Returns a new instance of this fragment for the given section
@@ -546,6 +670,14 @@ public class MainActivity extends Activity
         }
 
     }
+
+//    public static void galleryAddPic(File f) {
+//        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//        //File f = new File(mCurrentPhotoPath);
+//        Uri contentUri = Uri.fromFile(f);
+//        mediaScanIntent.setData(contentUri);
+//        MainActivity.sendBroadcast(mediaScanIntent);
+//    }
 
     @Override
     protected void onResume(){

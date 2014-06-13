@@ -13,12 +13,15 @@
         android:background="@android:color/black"
         android:layout_weight=".10">
 
+
+
+
         <LinearLayout
             android:orientation="vertical"
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:background="@color/tektronix"
-            android:layout_weight=".95">
+            android:background="#C0C0C0"
+            android:layout_weight="1">
 
             <com.tekscholar.androidclient.MultiImageSwitch
                 style="?android:attr/buttonStyleSmall"
@@ -74,12 +77,25 @@
 
         </LinearLayout>
 
+        <LinearLayout
+            android:orientation="vertical"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:background="#C0C0C0"
+            android:layout_weight=".15">
+
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#C0C0C0"
+                android:layout_weight=".2">
         <com.tekscholar.androidclient.ZoomSurface
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:id="@+id/zoom_surfaceView"
             android:layout_marginLeft="0dp"
-            android:layout_weight=".20"/>
+            android:layout_weight=".1"/>
 
         <com.tekscholar.androidclient.VerticalSeekBar
             android:layout_width="match_parent"
@@ -92,8 +108,34 @@
             android:paddingTop="5dp"
             android:thumbOffset="0dp"
             android:thumb="@drawable/trigger_arrow_white_50x50"/>
+            </LinearLayout>
+            <LinearLayout
+                android:orientation="horizontal"
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:background="#C0C0C0"
+                android:layout_weight="1">
 
-
+                <Button
+                    android:id="@+id/startstop_button"
+                    android:text="Start/Stop"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/captureimage_button"
+                    android:text="Capture Image"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"/>
+                <Button
+                    android:id="@+id/refresh_button"
+                    android:text="Refresh"
+                    android:layout_width="150dp"
+                    android:layout_height="35dp"
+                    android:layout_margin="10dp"/>
+            </LinearLayout>
+        </LinearLayout>
     </LinearLayout>
 
 

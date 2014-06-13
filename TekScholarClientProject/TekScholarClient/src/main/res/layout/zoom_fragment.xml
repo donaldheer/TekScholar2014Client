@@ -5,13 +5,40 @@
     android:layout_width="match_parent" android:layout_height="match_parent"
     android:orientation="vertical"
     android:background="#cccc">
-
     <LinearLayout
         android:orientation="horizontal"
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
-        android:background="@android:color/black"
-        android:layout_weight=".10">
+        android:background="#C0C0C0"
+        android:layout_weight="1">
+        <Button
+            android:id="@+id/startstop_button"
+            android:text="Start/Stop"
+            android:layout_width="120dp"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"/>
+        <Button
+            android:id="@+id/captureimage_button"
+            android:text="Capture Image"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"/>
+        <Button
+            android:id="@+id/refresh_button"
+            android:text="Refresh"
+            android:layout_width="100dp"
+            android:layout_height="35dp"
+            android:layout_margin="10dp"/>
+
+
+
+    </LinearLayout>
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:background="#C0C0C0"
+        android:layout_weight=".2">
 
         <com.tekscholar.androidclient.ZoomSurface
             android:layout_width="match_parent"
@@ -40,7 +67,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:background="@color/tektronix"
-        android:layout_weight=".90">
+        android:layout_weight="1">
 
         <com.tekscholar.androidclient.MultiImageSwitch
             style="?android:attr/buttonStyleSmall"
