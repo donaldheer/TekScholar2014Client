@@ -17,5 +17,7 @@
         <item>250MHz</item>
         <item>20MHz</item>
     </string-array>
+    <string name="hello_world">Hello world!</string>
+    <string name="imageContentDescription">Controllo dettatura</string>
 
 </resources>

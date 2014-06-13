@@ -7,13 +7,9 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.util.AttributeSet;
 import android.util.Log;
-import android.widget.Toast;
-
 import java.io.BufferedReader;
 import java.io.IOException;
-import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
@@ -192,6 +188,7 @@ public class BluetoothConnection {
         } else {
 //            Toast.makeText(MainActivity.this, "Not Connected", Toast.LENGTH_LONG).show();
 //            Toast.make
+            Log.d("ADJ", "Not connected");
         }
     }
 
