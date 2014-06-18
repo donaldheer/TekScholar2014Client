@@ -57,7 +57,8 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
     private float surfaceHeight;
     private float surfaceWidth;
-    private float surfaceScalar;
+    private float surfaceScalarX;
+    private float surfaceScalarY;
 
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -127,7 +128,8 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         //Y scalar stuff
         surfaceHeight = this.getHeight();
         surfaceWidth = this.getWidth();
-        surfaceScalar = surfaceHeight/255;
+        surfaceScalarY = surfaceHeight/255;
+        surfaceScalarX = surfaceWidth/1000;
 
         //surfaceHolder = getHolder();
 
@@ -293,8 +295,8 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         Log.d("ADJ", "String length: " + _data.length());
         Log.d("ADJ", "Byte length: " + dataBytes.length);
         for(int i = 0; i < dataBytes.length; i++){
-            dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalar * Float.parseFloat(Byte.toString(dataBytes[i]))));
-            dataPoints[i*2 + X] = i;
+            dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(Byte.toString(dataBytes[i]))));
+            dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
         }
 
 
