@@ -55,6 +55,10 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private Paint channel3Paint;
     private Paint channel4Paint;
 
+    private float surfaceHeight;
+    private float surfaceWidth;
+    private float surfaceScalar;
+
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -118,6 +122,12 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         mTextSize = 15; // Default size of Oscope text
         mBoundary = 10; // Default distance from the edge of the surface view
         mGridSize = 50; // Default number of pixels between grid lines on the surface view
+
+
+        //Y scalar stuff
+        surfaceHeight = this.getHeight();
+        surfaceWidth = this.getWidth();
+        surfaceScalar = surfaceHeight/255;
 
         //surfaceHolder = getHolder();
 
@@ -283,7 +293,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         Log.d("ADJ", "String length: " + _data.length());
         Log.d("ADJ", "Byte length: " + dataBytes.length);
         for(int i = 0; i < dataBytes.length; i++){
-            dataPoints[i*2 + Y] = Float.parseFloat(Byte.toString(dataBytes[i])) + 200;
+            dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalar * Float.parseFloat(Byte.toString(dataBytes[i]))));
             dataPoints[i*2 + X] = i;
         }
 
@@ -327,6 +337,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         }
         canvas.drawLine((float) j - mGridSize, (float) i, (float) (j - mGridSize),
                 (float) (y_dim - i), gridPaint);
+
 
 
         for(int k = 0; k < dataPoints.length/2 - 1;k++){
