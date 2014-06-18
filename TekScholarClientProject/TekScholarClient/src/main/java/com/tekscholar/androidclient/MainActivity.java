@@ -4,6 +4,7 @@ import android.app.ActionBar;
 import android.app.Activity;
 import android.app.Fragment;
 import android.app.FragmentManager;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.content.Intent;
 import android.graphics.Bitmap;
@@ -81,6 +82,14 @@ public class MainActivity extends Activity
 //                "TekShots"
 //        );
 //        galleryAddPic(storageDir);
+
+
+        mContinuousDictationFragment = new ContinuousDictationFragment(this);
+        FragmentTransaction ft = getFragmentManager().beginTransaction();
+        //ft.attach(mContinuousDictationFragment).commit();
+        //ft.add(R.id.dictationStateButton, mContinuousDictationFragment, "ADJ").commit();
+        ft.add(mContinuousDictationFragment, "ADJ").commit();
+        mContinuousDictationFragment.startVoiceRecognitionCycle();
 
         chActive = new boolean[numOfCh];
         for(int i = 0; i < numOfCh; i++){
@@ -701,7 +710,12 @@ public class MainActivity extends Activity
 
     public void onResume(){
         super.onResume();
-        //mContinuousDictationFragment.startVoiceRecognitionCycle();
+        //mContinuousDictationFragment = new ContinuousDictationFragment(this);
+//        FragmentTransaction ft = getFragmentManager().beginTransaction();
+//        //ft.attach(mContinuousDictationFragment).commit();
+//        //ft.add(R.id.dictationStateButton, mContinuousDictationFragment, "ADJ").commit();
+//        ft.add(mContinuousDictationFragment, "ADJ").commit();
+//        mContinuousDictationFragment.startVoiceRecognitionCycle();
     }
 
     @Override
@@ -724,6 +738,7 @@ public class MainActivity extends Activity
     @Override
     public void onDictationStart() {
         //Toast.makeText(this, "Start", Toast.LENGTH_LONG).show();
+        Log.d("ADJ", "Voice Rec Started");
     }
 
     @Override
@@ -735,6 +750,7 @@ public class MainActivity extends Activity
     @Override
     public void onDictationFinish() {
         //Toast.makeText(this, "Stop", Toast.LENGTH_LONG).show();
+        Log.d("ADJ", "Voice Rec Stopped");
     }
 
 

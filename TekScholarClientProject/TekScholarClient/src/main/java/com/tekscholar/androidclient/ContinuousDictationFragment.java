@@ -6,7 +6,9 @@ package com.tekscholar.androidclient;
 
 import android.app.Activity;
 import android.app.Fragment;
+import android.content.Context;
 import android.content.Intent;
+import android.media.AudioManager;
 import android.os.Bundle;
 import android.speech.RecognitionListener;
 import android.speech.RecognizerIntent;
@@ -50,32 +52,36 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     // Speech recognition control button
     private ImageButton controlBtn = null;
     // Timer used as timeout for the speech recognition
-    private Timer speechTimeout = null;
+//    private Timer speechTimeout = null;
+    //Context
+    public Context context;
+    //Muting variables
+    public AudioManager mAudioManager;
 
     // ---- METHODS ---- //
     // Method used to update button image as visual feedback of recognition service
-    private void buttonChangeState(int state){
-        switch (state) {
-            case 0:
-                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.white));
-                break;
-            case 1:
-                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.red));
-                break;
-            case 2:
-                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.yellow));
-                break;
-            case 3:
-                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.green));
-                break;
-            default:
-                break;
-        }
-    }
+//    private void buttonChangeState(int state){
+//        switch (state) {
+//            case 0:
+//                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.white));
+//                break;
+//            case 1:
+//                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.red));
+//                break;
+//            case 2:
+//                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.yellow));
+//                break;
+//            case 3:
+//                controlBtn.setImageDrawable(getResources().getDrawable(R.drawable.green));
+//                break;
+//            default:
+//                break;
+//        }
+//    }
     // Lazy instantiation method for getting the speech recognizer
     private SpeechRecognizer getSpeechRevognizer(){
         if (speech == null) {
-            speech = SpeechRecognizer.createSpeechRecognizer(getActivity());
+            speech = SpeechRecognizer.createSpeechRecognizer(context);
             speech.setRecognitionListener(this);
         }
 
@@ -84,7 +90,9 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     /**
      * Default constructor
      */
-    public ContinuousDictationFragment() {
+    public ContinuousDictationFragment(Context context) {
+        this.context = context;
+        mAudioManager = (AudioManager) context.getSystemService(Context.AUDIO_SERVICE);
     }
 
     /**
@@ -93,7 +101,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
                     @Override
                     public void onAttach(Activity activity) {
                         super.onAttach(activity);
-
+                        Log.d("ADJ", "Attached");
                         // This makes sure that the container activity has implemented
                         // the callback interface. If not, it throws an exception
                         try {
@@ -108,22 +116,25 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
                      */
                     @Override
                     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle savedInstanceState) {
+                        //Audio manager to eliminate bloop sound
+
+
                         // Inflate the layout for this fragment
                         View view = inflater.inflate(R.layout.fragment_dictation, container, false);
                         // Associate the button from the interface
                         controlBtn = (ImageButton) view.findViewById(R.id.dictationStateButton);
-                        buttonChangeState(0);
+//                        buttonChangeState(0);
                         // Handling method for the button
                         controlBtn.setOnClickListener(new OnClickListener() {
 
                             @Override
                             public void onClick(View v) {
                                 if (speech == null) {
-                                    buttonChangeState(1);
+//                                    buttonChangeState(1);
                                     startVoiceRecognitionCycle();
                                 }
                                 else {
-                                    buttonChangeState(1);
+//                                    buttonChangeState(1);
                                     stopVoiceRecognition();
                 }
             }
@@ -140,7 +151,8 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
         Intent intent = new Intent(RecognizerIntent.ACTION_RECOGNIZE_SPEECH);
         intent.putExtra(RecognizerIntent.EXTRA_LANGUAGE_MODEL,RecognizerIntent.LANGUAGE_MODEL_FREE_FORM);
         getSpeechRevognizer().startListening(intent);
-        buttonChangeState(1);
+//        buttonChangeState(1);
+        mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, true);
     }
 
     /**
@@ -148,14 +160,14 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
      */
     public void stopVoiceRecognition()
     {
-        speechTimeout.cancel();
+//        speechTimeout.cancel();
         if (speech != null) {
             speech.destroy();
 
             speech = null;
         }
 
-        buttonChangeState(0);
+//        buttonChangeState(0);
     }
 
 	/* RecognitionListener interface implementation */
@@ -163,18 +175,19 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     @Override
     public void onReadyForSpeech(Bundle params) {
         Log.d(TAG,"onReadyForSpeech");
+        mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
         // create and schedule the input speech timeout
-        speechTimeout = new Timer();
-        speechTimeout.schedule(new SilenceTimer(), 3000);
-        buttonChangeState(3);
+//        speechTimeout = new Timer();
+//        speechTimeout.schedule(new SilenceTimer(), 3000);
+//        buttonChangeState(3);
     }
 
     @Override
     public void onBeginningOfSpeech() {
         Log.d(TAG,"onBeginningOfSpeech");
         // Cancel the timeout because voice is arriving
-        speechTimeout.cancel();
-        buttonChangeState(2);
+//        speechTimeout.cancel();
+//        buttonChangeState(2);
         // Notify the container activity that dictation is started
         mCallback.onDictationStart();
     }
@@ -187,7 +200,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     @Override
     public void onEndOfSpeech() {
         Log.d(TAG,"onEndOfSpeech");
-        buttonChangeState(0);
+//        buttonChangeState(0);
         // Notify the container activity that dictation is finished
         mCallback.onDictationFinish();
     }
