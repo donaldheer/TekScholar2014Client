@@ -125,11 +125,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         mGridSize = 50; // Default number of pixels between grid lines on the surface view
 
 
-        //Y scalar stuff
-        surfaceHeight = this.getHeight();
-        surfaceWidth = this.getWidth();
-        surfaceScalarY = surfaceHeight/255;
-        surfaceScalarX = surfaceWidth/1000;
+
 
         //surfaceHolder = getHolder();
 
@@ -341,10 +337,16 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
                 (float) (y_dim - i), gridPaint);
 
 
+        //Scalar stuff
+        surfaceHeight = this.getHeight();
+        surfaceWidth = this.getWidth();
+        surfaceScalarY = surfaceHeight/255;
+        surfaceScalarX = surfaceWidth/1000;
+
 
         for(int k = 0; k < dataPoints.length/2 - 1;k++){
             Log.d("ADJ", Integer.toString(k));
-            canvas.drawLine(dataPoints[k*2], dataPoints[k*2+1], dataPoints[k*2+2], dataPoints[k*2+3], channel1Paint);
+            canvas.drawLine((surfaceScalarX * dataPoints[k*2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+1])), (surfaceScalarX * dataPoints[k*2+2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+3])), channel1Paint);
             //k = k+2;
         }
 
