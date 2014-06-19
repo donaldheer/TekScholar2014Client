@@ -52,7 +52,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     // Speech recognition control button
     private ImageButton controlBtn = null;
     // Timer used as timeout for the speech recognition
-//    private Timer speechTimeout = null;
+    private Timer speechTimeout = null;
     //Context
     public Context context;
     //Muting variables
@@ -160,7 +160,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
      */
     public void stopVoiceRecognition()
     {
-//        speechTimeout.cancel();
+        speechTimeout.cancel();
         if (speech != null) {
             speech.destroy();
 
@@ -177,8 +177,8 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
         Log.d(TAG,"onReadyForSpeech");
         mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
         // create and schedule the input speech timeout
-//        speechTimeout = new Timer();
-//        speechTimeout.schedule(new SilenceTimer(), 3000);
+        speechTimeout = new Timer();
+        speechTimeout.schedule(new SilenceTimer(), 3000);
 //        buttonChangeState(3);
     }
 
@@ -186,7 +186,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
     public void onBeginningOfSpeech() {
         Log.d(TAG,"onBeginningOfSpeech");
         // Cancel the timeout because voice is arriving
-//        speechTimeout.cancel();
+        speechTimeout.cancel();
 //        buttonChangeState(2);
         // Notify the container activity that dictation is started
         mCallback.onDictationStart();

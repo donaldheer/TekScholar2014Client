@@ -705,7 +705,11 @@ public class MainActivity extends Activity
 
     public void onPause() {
         super.onPause();
-        //mContinuousDictationFragment.stopVoiceRecognition();
+        try {
+            mContinuousDictationFragment.stopVoiceRecognition();
+        } catch(Exception e){
+            e.printStackTrace();
+        }
     }
 
     public void onResume(){
@@ -730,6 +734,11 @@ public class MainActivity extends Activity
                 btConnection.btSocket.close();
             }
         } catch (Exception e) {
+            e.printStackTrace();
+        }
+        try {
+            mContinuousDictationFragment.stopVoiceRecognition();
+        } catch(Exception e){
             e.printStackTrace();
         }
 
