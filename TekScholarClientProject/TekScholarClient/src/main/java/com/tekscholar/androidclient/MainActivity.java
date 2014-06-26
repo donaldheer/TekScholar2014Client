@@ -754,6 +754,11 @@ public class MainActivity extends Activity
     public void onResults(ContinuousDictationFragment delegate, ArrayList<String> dictationResults) {
         result = dictationResults.get(0);
         Toast.makeText(this,result,Toast.LENGTH_LONG).show();
+        if(result.contains("start")){
+            btConnection.sendMessage("FPAnel:PRESS RUNSTOP");
+        } else if (result.contains("stop")){
+            btConnection.sendMessage("FPAnel:PRESS runstop");
+        }
     }
 
     @Override
