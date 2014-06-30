@@ -174,7 +174,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
 
     @Override
     public void onReadyForSpeech(Bundle params) {
-        Log.d(TAG,"onReadyForSpeech");
+//        Log.d(TAG,"onReadyForSpeech");
         mAudioManager.setStreamSolo(AudioManager.STREAM_VOICE_CALL, false);
         // create and schedule the input speech timeout
         speechTimeout = new Timer();
@@ -184,7 +184,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
 
     @Override
     public void onBeginningOfSpeech() {
-        Log.d(TAG,"onBeginningOfSpeech");
+//        Log.d(TAG,"onBeginningOfSpeech");
         // Cancel the timeout because voice is arriving
         speechTimeout.cancel();
 //        buttonChangeState(2);
@@ -194,12 +194,12 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
 
     @Override
     public void onBufferReceived(byte[] buffer) {
-        Log.d(TAG,"onBufferReceived");
+//        Log.d(TAG,"onBufferReceived");
     }
 
     @Override
     public void onEndOfSpeech() {
-        Log.d(TAG,"onEndOfSpeech");
+//        Log.d(TAG,"onEndOfSpeech");
 //        buttonChangeState(0);
         // Notify the container activity that dictation is finished
         mCallback.onDictationFinish();
@@ -258,12 +258,12 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
 
     @Override
     public void onEvent(int eventType, Bundle params) {
-        Log.d(TAG,"onEvent");
+//        Log.d(TAG,"onEvent");
     }
 
     @Override
     public void onPartialResults(Bundle partialResults) {
-        Log.d(TAG,"onPartialResults");
+//        Log.d(TAG,"onPartialResults");
     }
 
     @Override
@@ -275,7 +275,7 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
         for (int i = 0; i < results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES).length; i++) {
             scores.append(results.getFloatArray(SpeechRecognizer.CONFIDENCE_SCORES)[i] + " ");
         }
-        Log.d(TAG,"onResults: " + results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) + " scores: " + scores.toString());
+//        Log.d(TAG,"onResults: " + results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) + " scores: " + scores.toString());
         // Return to the container activity dictation results
         if (results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION) != null) {
             mCallback.onResults(this, results.getStringArrayList(SpeechRecognizer.RESULTS_RECOGNITION));

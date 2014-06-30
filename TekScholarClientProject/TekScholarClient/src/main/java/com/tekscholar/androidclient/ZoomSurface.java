@@ -4,6 +4,9 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.Bundle;
+import android.os.Handler;
+import android.os.Message;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -38,6 +41,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private float yScale1 = 1;
     public BluetoothConnection btConnection;
     public List<String> commandsArray = new ArrayList<String>();
+    public List<String> recvCommandArray = new ArrayList<String>();
+
+    private Handler mHandler;
 
     private int x_dim, y_dim;
     private int mBoundary, mGridSize;
@@ -71,8 +77,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         // listener.
         mDetector.setOnDoubleTapListener(this);
 
-        mScaleDetector = new ScaleGestureDetector(context, this);
+        //mHandler = context.mHandler;
 
+        mScaleDetector = new ScaleGestureDetector(context, this);
 
         /**Paint properties for Display Grid**/
         gridPaint = new Paint();
@@ -281,9 +288,19 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 //            dataPoints[i*2 + X] = i*30 + 10;
 //            dataPoints[i*2 + Y] = i*30 + 10;
 //        }
-        MainActivity.btConnection.readMessage();
-        MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
-        data = MainActivity.btConnection.receiveMessage();
+        //MainActivity.btConnection.readMessage();
+        //MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+        Bundle bundle = new Bundle();
+        bundle.putString(MainActivity.COMMAND, ":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+        msg.setData(bundle);
+        mHandler.sendMessage(msg);
+        while(MainActivity.recvCommandArray.isEmpty()) {
+            Log.d("ADJ", "No Command Yet");
+        }
+        data = MainActivity.recvCommandArray.get(0);
+
+
 
         //Need to watch this since it might be only getting half message... need some form of catch
         int headerPosition = data.indexOf(":CURVE ");
@@ -437,8 +454,8 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     int selectedCH = 1;
     //Send scale update command to pi
     //MainActivity.btConnection.sendTestMessage();
-    MainActivity.btConnection.readMessage();
-    MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE?\n");
+    //MainActivity.btConnection.readMessage();
+    //MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE?\n");
     String zoomCommand  = MainActivity.btConnection.receiveMessage();
     String _zoomCommand = "";
     String _zoomCommand2 = "";
@@ -448,6 +465,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     String _scaleCommand2 = "";
     Log.d("ADJ", "zoomCommand = " + zoomCommand);
     Log.d("ADJ", "scaleCommand = " + scaleCommand);
+
 
     int vertPosition = zoomCommand.indexOf("HORIZONTAL:SCALE ");
     try {
@@ -491,5 +509,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     xScalePrev = 0;
     yScalePrev = 0;
 
+    }
+
+    public void setHandler(Handler handler) {
+        mHandler = handler;
     }
 }

@@ -248,8 +248,9 @@ public class NavigationDrawerFragment extends Fragment {
 
         switch (item.getItemId()) {
             case R.id.action_example:
-                List<String> messages = MainActivity.btConnection.readMessage();
-                Toast.makeText(getActivity(), messages.get(0) + messages.get(1), Toast.LENGTH_SHORT).show();
+
+//                List<String> messages = MainActivity.btConnection.readMessage();
+//                Toast.makeText(getActivity(), messages.get(0) + messages.get(1), Toast.LENGTH_SHORT).show();
 
                 return true;
         }
