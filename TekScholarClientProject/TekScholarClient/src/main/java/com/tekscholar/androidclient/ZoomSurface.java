@@ -55,6 +55,11 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private Paint channel3Paint;
     private Paint channel4Paint;
 
+    private float surfaceHeight;
+    private float surfaceWidth;
+    private float surfaceScalarX;
+    private float surfaceScalarY;
+
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
         this.context = context;
@@ -118,6 +123,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         mTextSize = 15; // Default size of Oscope text
         mBoundary = 10; // Default distance from the edge of the surface view
         mGridSize = 50; // Default number of pixels between grid lines on the surface view
+
+
+
 
         //surfaceHolder = getHolder();
 
@@ -262,8 +270,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     public void generatePoints(){
         String data = null;
         String _data = null;
-        byte[] dataBytes = new byte[2000];
-        int[] dataInts = new int[2000];
+        String[] dataBytes = new String[1001];
         dataPoints = new float[dataBytes.length * 2 + 2];
 
         int X = 0;
@@ -273,21 +280,30 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 //            dataPoints[i*2 + X] = i*30 + 10;
 //            dataPoints[i*2 + Y] = i*30 + 10;
 //        }
-        MainActivity.btConnection.readMessage();
-        MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
-        data = MainActivity.btConnection.receiveMessage();
-        int headerPosition = data.indexOf(":CURVE ");
-        _data = data.substring(headerPosition + 13);
-        Log.d("ADJ", _data);
-        dataBytes = _data.getBytes();
-        Log.d("ADJ", "String length: " + _data.length());
-        Log.d("ADJ", "Byte length: " + dataBytes.length);
-        for(int i = 0; i < dataBytes.length; i++){
-            dataPoints[i*2 + Y] = Float.parseFloat(Byte.toString(dataBytes[i])) + 200;
-            dataPoints[i*2 + X] = i;
+
+        for (int tempcount = 0; tempcount < 5; tempcount++){
+            MainActivity.btConnection.readMessage();
+            MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:DATA:ENCDG ASCIi;:CURVE?\n");
+            data = MainActivity.btConnection.receiveMessage();
+
+            //Need to watch this since it might be only getting half message... need some form of catch
+            int headerPosition = data.indexOf(":CURVE ");
+
+            if (data.length() > (headerPosition + 7)){
+                _data = data.substring(headerPosition + 7);
+                Log.d("ADJ", _data);
+                dataBytes = _data.split(",");
+                Log.d("ADJ", "String length: " + _data.length());
+                Log.d("ADJ", "Byte length: " + dataBytes.length);
+                for(int i = 0; i < dataBytes.length; i++){
+                    dataPoints[i*2 + Y] = ((surfaceHeight/2) - (surfaceScalarY * Integer.parseInt(dataBytes[i])));
+                    dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
+                    Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
+                }
+               break;
+            }
+
         }
-
-
     }
 
     @Override
@@ -329,9 +345,16 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
                 (float) (y_dim - i), gridPaint);
 
 
-        for(int k = 0; k < dataPoints.length/2 - 1;k++){
+        //Scalar stuff
+        surfaceHeight = this.getHeight();
+        surfaceWidth = this.getWidth();
+        surfaceScalarY = surfaceHeight/255;
+        surfaceScalarX = surfaceWidth/1000;
+
+
+        for(int k = 1; k < dataPoints.length/2 - 2;k++){
             Log.d("ADJ", Integer.toString(k));
-            canvas.drawLine(dataPoints[k*2], dataPoints[k*2+1], dataPoints[k*2+2], dataPoints[k*2+3], channel1Paint);
+            canvas.drawLine((surfaceScalarX * dataPoints[k*2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+1])), (surfaceScalarX * dataPoints[k*2+2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+3])), channel1Paint);
             //k = k+2;
         }
 
@@ -391,19 +414,19 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
 
         for(int k = 0; k < dataPoints.length/2 - 1;k++){
-            Log.d("ADJ", Integer.toString(k));
+            //Log.d("ADJ", Integer.toString(k));
             canvas.drawLine(dataPoints[k*2], dataPoints[k*2+1], dataPoints[k*2+2], dataPoints[k*2+3], channel1Paint);
             //k = k+2;
         }
 
-        Log.d("ADJ", Float.toString((float) j - mGridSize) + " " + Float.toString((float) i) + " " + Float.toString((float) (y_dim - i)));
+        //Log.d("ADJ", Float.toString((float) j - mGridSize) + " " + Float.toString((float) i) + " " + Float.toString((float) (y_dim - i)));
 
-        Log.d("ADJ", Float.toString(dataPoints[1]));
+        //Log.d("ADJ", Float.toString(dataPoints[1]));
 
-        canvas.drawLines(dataPoints, channel1Paint);
+        //canvas.drawLines(dataPoints, channel1Paint);
         //canvas.drawLine(dataPoints[2], dataPoints[3], dataPoints[4], dataPoints[5], channel1Paint);
 
-        canvas.drawPoints(dataPoints, channel1Paint);
+        //canvas.drawPoints(dataPoints, channel1Paint);
 
 
     }

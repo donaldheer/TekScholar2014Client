@@ -698,12 +698,12 @@ public class MainActivity extends Activity
 
     public void onPause() {
         super.onPause();
-        mContinuousDictationFragment.stopVoiceRecognition();
+        //mContinuousDictationFragment.stopVoiceRecognition();
     }
 
     public void onResume(){
         super.onResume();
-        mContinuousDictationFragment.startVoiceRecognitionCycle();
+        //mContinuousDictationFragment.startVoiceRecognitionCycle();
     }
 
     @Override
