@@ -4,6 +4,7 @@ import android.content.Context;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
@@ -16,6 +17,7 @@ import android.view.ScaleGestureDetector;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
+import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
@@ -41,7 +43,6 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private float yScale1 = 1;
     public BluetoothConnection btConnection;
     public List<String> commandsArray = new ArrayList<String>();
-    public List<String> recvCommandArray = new ArrayList<String>();
 
     private Handler mHandler;
 
@@ -134,7 +135,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
 
 
-        //surfaceHolder = getHolder();
+        surfaceHolder = getHolder();
 
         //Get datapoints
         //dataPoints = new float[5 * 2];
@@ -196,6 +197,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     @Override
     public boolean onSingleTapConfirmed(MotionEvent motionEvent) {
 //        Log.d(TAG, "It tapped me!");
+        Log.d("ADJ", "In zoomSurface " + MainActivity.recvCommandArray.toString());
         return false;
     }
 
@@ -274,49 +276,130 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    public void generatePoints(){
-        String data = null;
-        String _data = null;
-        byte[] dataBytes = new byte[2000];
-        int[] dataInts = new int[2000];
-        dataPoints = new float[dataBytes.length * 2 + 2];
+    private class recieveDataTask extends AsyncTask<URL, Integer, Long> {
 
-        int X = 0;
-        int Y = 1;
+        public String getMessage(){
+            while(true) {
+                Log.d("ADJ", "No Command Yet: " + MainActivity.recvCommandArray.toString());
+                try {
+                    synchronized (this) {
+                        wait(1000);
+                    }
+                } catch (InterruptedException e) {
+                    // TODO Auto-generated catch block
+                    Log.d(TAG, "Waiting didnt work!!");
+                    e.printStackTrace();
+                }
+                if(!MainActivity.recvCommandArray.isEmpty()){
+                    for(int count = 0; count < MainActivity.recvCommandArray.size(); ++count){
+                        if(MainActivity.recvCommandArray.get(count).contains("CURVE")){
+                            return MainActivity.recvCommandArray.get(count);
+
+                        }
+                    }
+                }
+            }
+        }
+
+        @Override
+        protected Long doInBackground(URL... urls) {
+            String data = null;
+            String _data = null;
+            byte[] dataBytes = new byte[2000];
+            int[] dataInts = new int[2000];
+            dataPoints = new float[dataBytes.length * 2 + 2];
+
+            int X = 0;
+            int Y = 1;
 //
 //        for(int i = 0; i < 5; i++){
 //            dataPoints[i*2 + X] = i*30 + 10;
 //            dataPoints[i*2 + Y] = i*30 + 10;
 //        }
-        //MainActivity.btConnection.readMessage();
-        //MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
-        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
-        Bundle bundle = new Bundle();
-        bundle.putString(MainActivity.COMMAND, ":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
-        msg.setData(bundle);
-        mHandler.sendMessage(msg);
-        while(MainActivity.recvCommandArray.isEmpty()) {
-            Log.d("ADJ", "No Command Yet");
+            //MainActivity.btConnection.readMessage();
+            //MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+            Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+            Bundle bundle = new Bundle();
+            bundle.putString(MainActivity.COMMAND, ":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+            msg.setData(bundle);
+            mHandler.sendMessage(msg);
+
+
+
+            data = getMessage();
+
+
+
+
+
+            //Need to watch this since it might be only getting half message... need some form of catch
+            int headerPosition = data.indexOf(":CURVE ");
+
+            _data = data.substring(headerPosition + 13);
+            Log.d("ADJ", _data);
+            dataBytes = _data.getBytes();
+            Log.d("ADJ", "String length: " + _data.length());
+            Log.d("ADJ", "Byte length: " + dataBytes.length);
+            for(int i = 0; i < dataBytes.length; i++){
+                dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(Byte.toString(dataBytes[i]))));
+                dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
+                Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
+            }
+            return null;
         }
-        data = MainActivity.recvCommandArray.get(0);
 
-
-
-        //Need to watch this since it might be only getting half message... need some form of catch
-        int headerPosition = data.indexOf(":CURVE ");
-
-        _data = data.substring(headerPosition + 13);
-        Log.d("ADJ", _data);
-        dataBytes = _data.getBytes();
-        Log.d("ADJ", "String length: " + _data.length());
-        Log.d("ADJ", "Byte length: " + dataBytes.length);
-        for(int i = 0; i < dataBytes.length; i++){
-            dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(Byte.toString(dataBytes[i]))));
-            dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
-            Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
+        @Override
+        protected void onPostExecute(Long result){
+            paint();
         }
+    }
 
-
+    public void generatePoints(){
+//        String data = null;
+//        String _data = null;
+//        byte[] dataBytes = new byte[2000];
+//        int[] dataInts = new int[2000];
+//        dataPoints = new float[dataBytes.length * 2 + 2];
+//
+//        int X = 0;
+//        int Y = 1;
+////
+////        for(int i = 0; i < 5; i++){
+////            dataPoints[i*2 + X] = i*30 + 10;
+////            dataPoints[i*2 + Y] = i*30 + 10;
+////        }
+//        //MainActivity.btConnection.readMessage();
+//        //MainActivity.btConnection.sendMessage(":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+//        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+//        Bundle bundle = new Bundle();
+//        bundle.putString(MainActivity.COMMAND, ":DATA:SOURCE CH1;:DATA:START 1;:DATA:STOP 1000;:DATA:WIDTH 1;:CURVE?\n");
+//        msg.setData(bundle);
+//        mHandler.sendMessage(msg);
+//
+//
+//
+//        while(MainActivity.recvCommandArray.isEmpty()) {
+//            Log.d("ADJ", "No Command Yet: " + MainActivity.recvCommandArray.toString());
+//        }
+//        data = MainActivity.recvCommandArray.get(0);
+//
+//
+//
+//        //Need to watch this since it might be only getting half message... need some form of catch
+//        int headerPosition = data.indexOf(":CURVE ");
+//
+//        _data = data.substring(headerPosition + 13);
+//        Log.d("ADJ", _data);
+//        dataBytes = _data.getBytes();
+//        Log.d("ADJ", "String length: " + _data.length());
+//        Log.d("ADJ", "Byte length: " + dataBytes.length);
+//        for(int i = 0; i < dataBytes.length; i++){
+//            dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(Byte.toString(dataBytes[i]))));
+//            dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
+//            Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
+//        }
+//
+        new recieveDataTask().execute();
     }
 
     @Override
@@ -384,9 +467,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     }
 
     public void paint(){
-        //Canvas canvas = surfaceHolder.lockCanvas();
-        //paintOnCanvas(canvas);
-        //surfaceHolder.unlockCanvasAndPost(canvas);
+        Canvas canvas = surfaceHolder.lockCanvas();
+        paintOnCanvas(canvas);
+        surfaceHolder.unlockCanvasAndPost(canvas);
     }
 
     public void paintOnCanvas(Canvas canvas) {

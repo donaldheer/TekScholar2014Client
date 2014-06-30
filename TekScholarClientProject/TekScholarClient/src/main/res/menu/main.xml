@@ -11,4 +11,7 @@
     <item android:id="@+id/action_test"
         android:title="Test button"
         android:showAsAction="never" />
+    <item android:id="@+id/action_connect"
+        android:title="Connect"
+        android:showAsAction="never" />
 </menu>

@@ -7,7 +7,10 @@ import android.app.FragmentManager;
 import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.net.Uri;
@@ -40,6 +43,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.OutputStream;
+import java.io.UnsupportedEncodingException;
 import java.text.SimpleDateFormat;
 import java.util.Date;
 
@@ -53,7 +57,7 @@ public class MainActivity extends Activity
 
     public static BluetoothConnection btConnection;
     private NfcAdapter mNfcAdapter;
-    public String mac;
+    public String mac = "00:00:00:00:00:00";
     public BluetoothDevice device;
     public static boolean btConnected = false;
     private ContinuousDictationFragment mContinuousDictationFragment;
@@ -87,6 +91,8 @@ public class MainActivity extends Activity
     private BluetoothAdapter mBluetoothAdapter = null;
     // Member object for the chat services
     private BluetoothChatService mChatService = null;
+    public String pinString = "1234";
+    public IntentFilter pairingRequestIntent = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
 
     /**
      * Fragment managing the behaviors, interactions and presentation of the navigation drawer.
@@ -99,6 +105,18 @@ public class MainActivity extends Activity
     private CharSequence mTitle;
     public static boolean[] chActive;
     public int numOfCh = 4;
+
+    public BroadcastReceiver mPairingReceiver = new BroadcastReceiver() {
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (intent.getAction() == BluetoothDevice.ACTION_PAIRING_REQUEST) {
+                Log.d("ADJ", "Yay");
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                device.setPin(convertPinToBytes(pinString));
+                device.setPairingConfirmation(true);
+            }
+        }
+    };
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -159,7 +177,7 @@ public class MainActivity extends Activity
 
 
 
-            getActionBar().setIcon(R.drawable.ic_launcher);
+//            getActionBar().setIcon(R.drawable.ic_launcher);
         }
         mNavigationDrawerFragment = (NavigationDrawerFragment)
                 getFragmentManager().findFragmentById(R.id.navigation_drawer);
@@ -258,7 +276,9 @@ public class MainActivity extends Activity
         switch (item.getItemId()) {
             case R.id.action_settings:
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                device = mBluetoothAdapter.getRemoteDevice(mac);
+                device = mBluetoothAdapter.getRemoteDevice("00:12:11:12:09:55");
+                device.setPin(convertPinToBytes(pinString));
+                device.setPairingConfirmation(true);
                 mChatService.connect(device);
                 return true;
             case R.id.action_test:
@@ -268,6 +288,15 @@ public class MainActivity extends Activity
 //                btConnection.sendMessage("123456789\n");
 //                btConnection.sendMessage("123456789\n");
 //                btConnection.sendMessage("123456789\n");
+                return true;
+            case R.id.action_connect:
+                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+                device = mBluetoothAdapter.getRemoteDevice("64:27:37:C1:29:83");
+                device.setPairingConfirmation(true);
+                mChatService.connect(device);
+                return true;
+            case R.id.action_example:
+                Log.d("ADJ", recvCommandArray.toString());
                 return true;
         }
         return super.onOptionsItemSelected(item);
@@ -831,9 +860,10 @@ public class MainActivity extends Activity
 //    }
 
 
-
-    public void onPause() {
+    @Override
+    protected void onPause() {
         super.onPause();
+        unregisterReceiver(mPairingReceiver);
         try {
             mContinuousDictationFragment.stopVoiceRecognition();
         } catch(Exception e){
@@ -844,6 +874,7 @@ public class MainActivity extends Activity
     @Override
     public synchronized void onResume(){
         super.onResume();
+        registerReceiver(mPairingReceiver, pairingRequestIntent);
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
@@ -947,5 +978,21 @@ public class MainActivity extends Activity
 //        Log.d("ADJ", "Voice Rec Stopped");
     }
 
+    public byte[] convertPinToBytes(String pin) {
+        if (pin == null) {
+            return null;
+        }
+        byte[] pinBytes;
+        try {
+            pinBytes = pin.getBytes("UTF-8");
+        } catch (UnsupportedEncodingException uee) {
+            Log.e("ADJ", "UTF-8 not supported?!?");  // this should not happen
+            return null;
+        }
+        if (pinBytes.length <= 0 || pinBytes.length > 16) {
+            return null;
+        }
+        return pinBytes;
+    }
 
 }

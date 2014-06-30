@@ -30,8 +30,7 @@ public class BluetoothConnection {
     public String TAG = "ADJ";
     public byte[] pin = {1,2,3,4};
     public String pinString = "1234";
-    public IntentFilter pairingRequestIntent = new IntentFilter(BluetoothDevice.ACTION_PAIRING_REQUEST);
-    public IntentFilter connectedIntent = new IntentFilter(BluetoothDevice.ACTION_BOND_STATE_CHANGED);
+
     public BluetoothDevice remoteDevice;
     public boolean connected = false;
     public List<String> commandsArray = new ArrayList<String>();
