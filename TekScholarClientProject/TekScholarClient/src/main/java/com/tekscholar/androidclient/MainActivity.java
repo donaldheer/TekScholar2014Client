@@ -54,6 +54,7 @@ public class MainActivity extends Activity
     public static BluetoothConnection btConnection;
     private NfcAdapter mNfcAdapter;
     public String mac;
+    public BluetoothDevice device;
     public static boolean btConnected = false;
     private ContinuousDictationFragment mContinuousDictationFragment;
     private String result;
@@ -145,7 +146,7 @@ public class MainActivity extends Activity
 
             // Get local Bluetooth adapter
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-            BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mac);
+            device = mBluetoothAdapter.getRemoteDevice(mac);
             mChatService.connect(device);
 
             // If the adapter is null, then Bluetooth is not supported
@@ -171,7 +172,7 @@ public class MainActivity extends Activity
 
         mac = "64:27:37:C1:29:83";
         mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mac);
+        device = mBluetoothAdapter.getRemoteDevice(mac);
         if(mChatService != null) {
             Log.d("ADJ", "chatservice null");
             mChatService.connect(device);
@@ -257,7 +258,7 @@ public class MainActivity extends Activity
         switch (item.getItemId()) {
             case R.id.action_settings:
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                BluetoothDevice device = mBluetoothAdapter.getRemoteDevice(mac);
+                device = mBluetoothAdapter.getRemoteDevice(mac);
                 mChatService.connect(device);
                 return true;
             case R.id.action_test:
@@ -756,7 +757,6 @@ public class MainActivity extends Activity
         Log.d("ADJ", "In setupChat");
         // Initialize the BluetoothChatService to perform bluetooth connections
         mChatService = new BluetoothChatService(this, mHandler);
-        mChatService = new BluetoothChatService(this, mHandler);
 
         // Initialize the buffer for outgoing messages
         mOutStringBuffer = new StringBuffer("");
@@ -781,7 +781,7 @@ public class MainActivity extends Activity
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
 //                            mTitle.setText(R.string.title_connecting);
-
+                            getActionBar().setIcon(R.drawable.tek_button_1_color);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
                         case BluetoothChatService.STATE_NONE:
@@ -851,7 +851,8 @@ public class MainActivity extends Activity
             // Only if the state is STATE_NONE, do we know that we haven't started already
             if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
                 // Start the Bluetooth chat services
-                mChatService.start();
+
+                mChatService.connect(device);
             }
         }
 
