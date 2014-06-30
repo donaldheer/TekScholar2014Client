@@ -8,6 +8,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Message;
+import android.speech.SpeechRecognizer;
 import android.support.v4.view.GestureDetectorCompat;
 import android.util.AttributeSet;
 import android.util.Log;
@@ -21,6 +22,8 @@ import java.net.URL;
 import java.nio.ByteBuffer;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 /**
  * Created by aidandj on 2/14/14.
@@ -43,6 +46,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private float yScale1 = 1;
     public BluetoothConnection btConnection;
     public List<String> commandsArray = new ArrayList<String>();
+    private Timer receiveTimeout = null;
 
     private Handler mHandler;
 
@@ -66,6 +70,18 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
     private float surfaceWidth;
     private float surfaceScalarX;
     private float surfaceScalarY;
+
+    public class ReceiveTimer extends TimerTask {
+        AsyncTask mTask;
+        public ReceiveTimer(AsyncTask task) {
+            mTask = task;
+        }
+        @Override
+        public void run() {
+            mTask.cancel(true);
+        }
+    }
+
 
     public ZoomSurface(Context context, AttributeSet attrs) {
         super(context, attrs);
@@ -280,6 +296,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
         public String getMessage(){
             while(true) {
+                if(isCancelled()) return null;
                 Log.d("ADJ", "No Command Yet: " + MainActivity.recvCommandArray.toString());
                 try {
                     synchronized (this) {
@@ -352,6 +369,15 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         protected void onPostExecute(Long result){
             paint();
         }
+
+        @Override
+        protected void onCancelled() {
+            Message msg = mHandler.obtainMessage(MainActivity.MESSAGE_TOAST);
+            Bundle bundle = new Bundle();
+            bundle.putString(MainActivity.TOAST, "Timeout");
+            msg.setData(bundle);
+            mHandler.sendMessage(msg);
+        }
     }
 
     public void generatePoints(){
@@ -399,7 +425,10 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 //            Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
 //        }
 //
-        new recieveDataTask().execute();
+        AsyncTask mrecieveDataTask = new recieveDataTask();
+        mrecieveDataTask.execute();
+        receiveTimeout = new Timer();
+        receiveTimeout.schedule(new ReceiveTimer(mrecieveDataTask), 5000);
     }
 
     @Override
@@ -449,7 +478,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
 
         for(int k = 0; k < dataPoints.length/2 - 1;k++){
-            Log.d("ADJ", Integer.toString(k));
+//            Log.d("ADJ", Integer.toString(k));
             canvas.drawLine((surfaceScalarX * dataPoints[k*2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+1])), (surfaceScalarX * dataPoints[k*2+2]), (surfaceHeight - (surfaceScalarY * dataPoints[k*2+3])), channel1Paint);
             //k = k+2;
         }
