@@ -164,8 +164,12 @@ public class MainActivity extends Activity
 
             // Get local Bluetooth adapter
             mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+            Log.d("ADJ", mac);
             device = mBluetoothAdapter.getRemoteDevice(mac);
-            mChatService.connect(device);
+            if(mChatService != null) {
+                Log.d("ADJ", "chatservice null");
+                mChatService.connect(device);
+            }
 
             // If the adapter is null, then Bluetooth is not supported
             if (mBluetoothAdapter == null) {
@@ -188,13 +192,14 @@ public class MainActivity extends Activity
                 R.id.navigation_drawer,
                 (DrawerLayout) findViewById(R.id.drawer_layout));
 
-        mac = "64:27:37:C1:29:83";
-        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-        device = mBluetoothAdapter.getRemoteDevice(mac);
-        if(mChatService != null) {
-            Log.d("ADJ", "chatservice null");
-            mChatService.connect(device);
-        }
+//        mac = "64:27:37:C1:29:83";
+//        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+//        Log.d("ADJ", mac);
+//        device = mBluetoothAdapter.getRemoteDevice(mac);
+//        if(mChatService != null) {
+//            Log.d("ADJ", "chatservice null");
+//            mChatService.connect(device);
+//        }
     }
 
     private String extractMessage(NdefMessage msg) {

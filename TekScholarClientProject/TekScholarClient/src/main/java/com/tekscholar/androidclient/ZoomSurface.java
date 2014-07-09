@@ -292,7 +292,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         super.onSizeChanged(w, h, oldw, oldh);
     }
 
-    private class recieveDataTask extends AsyncTask<URL, Integer, Long> {
+    private class recieveDataTask extends AsyncTask<String, Integer, Long> {
 
         public String getMessage(){
             while(true) {
@@ -300,7 +300,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
                 Log.d("ADJ", "No Command Yet: " + MainActivity.recvCommandArray.toString());
                 try {
                     synchronized (this) {
-                        wait(1000);
+                        wait(3000);
                     }
                 } catch (InterruptedException e) {
                     // TODO Auto-generated catch block
@@ -310,7 +310,7 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
                 if(!MainActivity.recvCommandArray.isEmpty()){
                     for(int count = 0; count < MainActivity.recvCommandArray.size(); ++count){
                         if(MainActivity.recvCommandArray.get(count).contains("CURVE")){
-                            return MainActivity.recvCommandArray.get(count);
+                            return MainActivity.recvCommandArray.toString();
 
                         }
                     }
@@ -319,9 +319,9 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         }
 
         @Override
-        protected Long doInBackground(URL... urls) {
+        protected Long doInBackground(String... params) {
             String data = null;
-            String _data = null;
+            String[] _data = new String[2000];
             byte[] dataBytes = new byte[2000];
             int[] dataInts = new int[2000];
             dataPoints = new float[dataBytes.length * 2 + 2];
@@ -344,21 +344,22 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
 
             data = getMessage();
-
-
+            MainActivity.recvCommandArray.clear();
+            Log.d("ADJ", "Message = " + data);
 
 
 
             //Need to watch this since it might be only getting half message... need some form of catch
-            int headerPosition = data.indexOf(":CURVE ");
+            int headerPosition = data.indexOf("CURVE ");
 
-            _data = data.substring(headerPosition + 13);
-            Log.d("ADJ", _data);
-            dataBytes = _data.getBytes();
-            Log.d("ADJ", "String length: " + _data.length());
+            _data = data.substring(headerPosition + 6).replace(", ", "").replace("]", "").split(",");
+            //Log.d("ADJ", _data);
+            //dataBytes = _data.getBytes();
+            //Log.d("ADJ", "String length: " + _data.length());
             Log.d("ADJ", "Byte length: " + dataBytes.length);
-            for(int i = 0; i < dataBytes.length; i++){
-                dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(Byte.toString(dataBytes[i]))));
+            for(int i = 0; i < _data.length; i++){
+                Log.d("MSG", _data[i]);
+                dataPoints[i*2 + Y] = (surfaceHeight - (surfaceScalarY * Float.parseFloat(_data[i])));
                 dataPoints[i*2 + X] = (surfaceScalarX *(float) i);
                 Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
             }
@@ -425,8 +426,12 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 //            Log.d("ADJ", "Point Y:" + dataPoints[i*2 + X] + " x " + dataPoints[i*2 + Y]);
 //        }
 //
+        Log.d("ADJ", "Test1");
         AsyncTask mrecieveDataTask = new recieveDataTask();
-        mrecieveDataTask.execute();
+        String[] channel = {"","1"};
+        Log.d("ADJ", "Test2");
+        mrecieveDataTask.execute(channel);
+        Log.d("ADJ", "Test3");
         receiveTimeout = new Timer();
         receiveTimeout.schedule(new ReceiveTimer(mrecieveDataTask), 5000);
     }
