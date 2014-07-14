@@ -23,56 +23,47 @@
             android:background="#C0C0C0"
             android:layout_weight="1">
 
-            <com.tekscholar.androidclient.MultiImageSwitch
+            <ImageButton
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="New Button"
                 android:layout_weight="1"
                 android:id="@+id/multiSwitch1"
-                mystyles:image_count="3"
-                mystyles:image0="@drawable/tek_button_1_gray"
-                mystyles:image1="@drawable/tek_button_1_color"
-                mystyles:image2="@drawable/tek_button_1_less_color"
+                android:src="@drawable/button1"
+                android:background="@null"
                 />
 
-            <com.tekscholar.androidclient.MultiImageSwitch
+            <ImageButton
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="New Button"
                 android:layout_weight="1"
                 android:id="@+id/multiSwitch2"
-                mystyles:image_count="3"
-                mystyles:image0="@drawable/tek_button_2_gray"
-                mystyles:image1="@drawable/tek_button_2_color"
-                mystyles:image2="@drawable/tek_button_2_less_color"
+                android:src="@drawable/button2"
+                android:background="@null"
                 />
 
-            <com.tekscholar.androidclient.MultiImageSwitch
+            <ImageButton
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="New Button"
                 android:layout_weight="1"
                 android:id="@+id/multiSwitch3"
-                mystyles:image_count="3"
-                mystyles:image0="@drawable/tek_button_3_gray"
-                mystyles:image1="@drawable/tek_button_3_color"
-                mystyles:image2="@drawable/tek_button_3_less_color"
+                android:src="@drawable/button3"
+                android:background="@null"
                 />
-
-            <com.tekscholar.androidclient.MultiImageSwitch
+            <ImageButton
                 style="?android:attr/buttonStyleSmall"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
                 android:text="New Button"
                 android:layout_weight="1"
                 android:id="@+id/multiSwitch4"
-                mystyles:image_count="3"
-                mystyles:image0="@drawable/tek_button_4_gray"
-                mystyles:image1="@drawable/tek_button_4_color"
-                mystyles:image2="@drawable/tek_button_4_less_color"
+                android:src="@drawable/button4"
+                android:background="@null"
                 />
 
         </LinearLayout>

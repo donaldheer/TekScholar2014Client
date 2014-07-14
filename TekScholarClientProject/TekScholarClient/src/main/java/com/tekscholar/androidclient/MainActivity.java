@@ -13,6 +13,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.graphics.Canvas;
+import android.media.Image;
 import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -33,6 +34,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
+import android.widget.ImageButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -363,10 +365,10 @@ public class MainActivity extends Activity
         private SurfaceHolder mZoomViewHolder;
         private Handler mHandler;
 
-        MultiImageSwitch multiSwitch1;
-        MultiImageSwitch multiSwitch2;
-        MultiImageSwitch multiSwitch3;
-        MultiImageSwitch multiSwitch4;
+        ImageButton multiSwitch1;
+        ImageButton multiSwitch2;
+        ImageButton multiSwitch3;
+        ImageButton multiSwitch4;
 
         Button startStopImage;
         Button captureImage;
@@ -400,78 +402,56 @@ public class MainActivity extends Activity
             mZoomViewHolder = mZoomView.getHolder();
             mZoomView.setHandler(mHandler);
 
-            multiSwitch1 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch1);
-            multiSwitch2 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch2);
-            multiSwitch3 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch3);
-            multiSwitch4 = (MultiImageSwitch) rootView.findViewById(R.id.multiSwitch4);
+            mZoomView.invalidate();
+//            Canvas temp = mZoomViewHolder.lockCanvas();
+//            mZoomView.draw(temp);
+//            mZoomViewHolder.unlockCanvasAndPost(temp);
+
+
+            multiSwitch1 = (ImageButton) rootView.findViewById(R.id.multiSwitch1);
+            multiSwitch2 = (ImageButton) rootView.findViewById(R.id.multiSwitch2);
+            multiSwitch3 = (ImageButton) rootView.findViewById(R.id.multiSwitch3);
+            multiSwitch4 = (ImageButton) rootView.findViewById(R.id.multiSwitch4);
+
             try {
                 multiSwitch1.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        multiSwitch1.onClick(view);
-                        if (multiSwitch1.getState() != 1) {
-
-//                            btConnection.sendMessage("SELECT:CH1 1\n");
-                            chActive[0] = true;
-                        } else {
-//                            btConnection.sendMessage("SELECT:CH1 0\n");
-                            chActive[0] = false;
-
-                        }
-//                        multiSwitch2.setState(0);
-//                        multiSwitch3.setState(0);
-//                        multiSwitch4.setState(0);
+                        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainActivity.COMMAND, "FPANEL:PRESS CH1");
+                        msg.setData(bundle);
+                        mHandler.sendMessage(msg);
                     }
                 });
                 multiSwitch2.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        multiSwitch2.onClick(view);
-                        if (multiSwitch2.getState() != 1) {
-
-//                            btConnection.sendMessage("SELECT:CH2 1\n");
-                            chActive[1] = true;
-                        } else {
-//                            btConnection.sendMessage("SELECT:CH2 0\n");
-                            chActive[1] = false;
-                        }
-//                        multiSwitch1.setState(0);
-//                        multiSwitch3.setState(0);
-//                        multiSwitch4.setState(0);
+                        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainActivity.COMMAND, ":FPANEL:PRESS CH2");
+                        msg.setData(bundle);
+                        mHandler.sendMessage(msg);
                     }
                 });
                 multiSwitch3.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        multiSwitch3.onClick(view);
-                        if (multiSwitch3.getState() != 1) {
-
-//                            btConnection.sendMessage("SELECT:CH3 1\n");
-                            chActive[2] = true;
-                        } else {
-//                            btConnection.sendMessage("SELECT:CH3 0\n");
-                            chActive[2] = false;
-                        }
-//                        multiSwitch1.setState(0);
-//                        multiSwitch2.setState(0);
-//                        multiSwitch4.setState(0);
+                        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainActivity.COMMAND, ":FPANEL:PRESS CH3");
+                        msg.setData(bundle);
+                        mHandler.sendMessage(msg);
                     }
                 });
                 multiSwitch4.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View view) {
-                        multiSwitch4.onClick(view);
-                        if (multiSwitch4.getState() != 1) {
-
-//                            btConnection.sendMessage("SELECT:CH4 1\n");
-                            chActive[3] = true;
-                        } else {
-//                            btConnection.sendMessage("SELECT:CH4 0\n");
-                            chActive[3] = false;
-                        }
-//                        multiSwitch1.setState(0);
-//                        multiSwitch2.setState(0);
-//                        multiSwitch3.setState(0);
+                        Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                        Bundle bundle = new Bundle();
+                        bundle.putString(MainActivity.COMMAND, ":FPANEL:PRESS CH4");
+                        msg.setData(bundle);
+                        mHandler.sendMessage(msg);
                     }
                 });
             } catch(Exception e) {
@@ -556,7 +536,7 @@ public class MainActivity extends Activity
 //                    Canvas temp = mZoomViewHolder.lockCanvas();
 //                    mZoomView.draw(temp);
 //                    mZoomViewHolder.unlockCanvasAndPost(temp);
-                    //mZoomView.paint();
+//                    mZoomView.paint();
                 }
             });
 
@@ -778,6 +758,8 @@ public class MainActivity extends Activity
             return;
         }
 
+        message = message.concat("\n\r");
+
         // Check that there's actually something to send
         if (message.length() > 0) {
             // Get the message bytes and tell the BluetoothChatService to write
@@ -819,6 +801,8 @@ public class MainActivity extends Activity
                             getActionBar().setIcon(R.drawable.tek_button_1_color);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
+                            Log.d("ADJ", "Listening");
+                            break;
                         case BluetoothChatService.STATE_NONE:
                             getActionBar().setIcon(R.drawable.ic_launcher_red);
 //                            mTitle.setText(R.string.title_not_connected);
@@ -895,11 +879,14 @@ public class MainActivity extends Activity
         // Performing this check in onResume() covers the case in which BT was
         // not enabled during onStart(), so we were paused to enable it...
         // onResume() will be called when ACTION_REQUEST_ENABLE activity returns.
+        mContinuousDictationFragment.startVoiceRecognitionCycle();
+        Log.d("ADJ", "Null");
         if (mChatService != null) {
             // Only if the state is STATE_NONE, do we know that we haven't started already
+            Log.d("ADJ", Integer.toString(mChatService.getState()));
             if (mChatService.getState() == BluetoothChatService.STATE_NONE) {
                 // Start the Bluetooth chat services
-
+                Log.d("ADJ", "Before connect: " + device.getAddress());
                 mChatService.connect(device);
             }
         }
@@ -909,6 +896,9 @@ public class MainActivity extends Activity
     @Override
     protected void onStop() {
         super.onStop();
+        if(mChatService != null) {
+            mChatService.stop();
+        }
         try {
             if (btConnection.isConnected()) {
 
@@ -959,6 +949,7 @@ public class MainActivity extends Activity
     @Override
     public void onStart() {
         super.onStart();
+        Log.d("ADJ", "In onStart");
         // If BT is not on, request that it be enabled.
         // setupChat() will then be called during onActivityResult
         if(!(mBluetoothAdapter == null)) {
@@ -983,7 +974,7 @@ public class MainActivity extends Activity
         result = dictationResults.get(0);
         for(int i = 0; i < dictationResults.size(); i++) {
             result = dictationResults.get(i).toLowerCase();
-            //Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
             if (result.contains("start")) {
                 sendBTMessage("FPAnel:PRESS RUNSTOP\n\r");
                 break;
