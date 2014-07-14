@@ -974,7 +974,7 @@ public class MainActivity extends Activity
         result = dictationResults.get(0);
         for(int i = 0; i < dictationResults.size(); i++) {
             result = dictationResults.get(i).toLowerCase();
-            Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+            //Toast.makeText(this, result, Toast.LENGTH_LONG).show();
             if (result.contains("start")) {
                 sendBTMessage("FPAnel:PRESS RUNSTOP\n\r");
                 break;
@@ -1011,6 +1011,14 @@ public class MainActivity extends Activity
                 break;
             } else if (result.contains("channel 4 on") | result.contains("channel four on")) {
                 sendBTMessage("SELECT:CH4 1\n\r");
+                break;
+            }
+              else if (result.contains("autoset") | (result.contains("auto set")) | result.contains("automobile")) {
+                sendBTMessage("AUTOSET EXECUTE\n\r");
+                break;
+            }
+              else if (result.contains("reset")) {
+                sendBTMessage("AUTOSET UNDO\n\r");
                 break;
             }
         }
