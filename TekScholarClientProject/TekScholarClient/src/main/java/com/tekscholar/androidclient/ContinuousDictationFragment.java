@@ -87,6 +87,10 @@ public class ContinuousDictationFragment extends Fragment implements Recognition
 
         return speech;
     }
+
+    public ContinuousDictationFragment() {
+
+    }
     /**
      * Default constructor
      */

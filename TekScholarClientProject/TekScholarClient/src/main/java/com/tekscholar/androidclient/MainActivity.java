@@ -81,6 +81,7 @@ public class MainActivity extends Activity
     private static final int REQUEST_CONNECT_DEVICE = 1;
     private static final int REQUEST_ENABLE_BT = 2;
 
+    public static String recvCommandString = new String();
     public static List<String> recvCommandArray = new ArrayList<String>();
 
     // Name of the connected device
@@ -834,9 +835,20 @@ public class MainActivity extends Activity
                 case MESSAGE_READ:
                     byte[] readBuf = (byte[]) msg.obj;
                     // construct a string from the valid bytes in the buffer
+                    for( int i = 0; i < readBuf.length; i++){
+                        if(readBuf[i] == '\r'){
+                            String fail = readBuf.toString();
+                        }
+                    }
                     String readMessage = new String(readBuf, 0, msg.arg1);
                     //mConversationArrayAdapter.add(mConnectedDeviceName+":  " + readMessage);
-                    recvCommandArray.add(readMessage);
+                    if(readMessage.contains(Character.toString('\r'))) {
+                        recvCommandString = recvCommandString.concat(readMessage.substring(0, readMessage.indexOf('\r')));
+                        recvCommandArray.add(recvCommandString);
+                        recvCommandString = readMessage.substring(readMessage.indexOf('\r') + 1);
+                    } else {
+                        recvCommandString = recvCommandString.concat(readMessage);
+                    }
                     break;
                 case MESSAGE_DEVICE_NAME:
                     // save the connected device's name
@@ -971,9 +983,9 @@ public class MainActivity extends Activity
         result = dictationResults.get(0);
         Toast.makeText(this,result,Toast.LENGTH_LONG).show();
         if(result.contains("start")){
-            btConnection.sendMessage("FPAnel:PRESS RUNSTOP");
+//            btConnection.sendMessage("FPAnel:PRESS RUNSTOP");
         } else if (result.contains("stop")){
-            btConnection.sendMessage("FPAnel:PRESS runstop");
+//            btConnection.sendMessage("FPAnel:PRESS runstop");
         }
     }
 

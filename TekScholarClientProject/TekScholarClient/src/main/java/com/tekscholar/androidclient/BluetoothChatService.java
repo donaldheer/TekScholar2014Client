@@ -401,7 +401,13 @@ public class BluetoothChatService {
                 try {
                     // Read from the InputStream
                     bytes = mmInStream.read(buffer);
-Log.d("ADJ", "Read Message");
+                    for( int i = 0; i < buffer.length; i++){
+                        if(buffer[i] == '\r'){
+                            String fail = buffer.toString();
+                        }
+                    }
+                    Log.d("ADJ", "Read Message");
+
                     // Send the obtained bytes to the UI Activity
                     mHandler.obtainMessage(MainActivity.MESSAGE_READ, bytes, -1, buffer)
                             .sendToTarget();
