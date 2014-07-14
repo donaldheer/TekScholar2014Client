@@ -11,14 +11,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -30,25 +26,14 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.Switch;
 import android.widget.TextView;
 import android.widget.Toast;
 
-
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
-
 import java.util.ArrayList;
-
 import java.util.List;
 
 
@@ -903,12 +888,14 @@ public class MainActivity extends Activity
                 mChatService.connect(device);
             }
         }
+        //mContinuousDictationFragment.startVoiceRecognitionCycle();
 
     }
 
     @Override
     protected void onStop() {
         super.onStop();
+        /*
         try {
             if (btConnection.isConnected()) {
 
@@ -919,6 +906,10 @@ public class MainActivity extends Activity
             }
         } catch (Exception e) {
             e.printStackTrace();
+        }
+        */
+        if(mChatService != null) {  //IF STATEMENT ADDED
+            mChatService.stop();
         }
         try {
             mContinuousDictationFragment.stopVoiceRecognition();
@@ -1020,6 +1011,14 @@ public class MainActivity extends Activity
                 break;
             } else if (result.contains("channel 4 on") | result.contains("channel four on")) {
                 sendBTMessage("SELECT:CH4 1\n\r");
+                break;
+            }
+              else if (result.contains("autoset") | (result.contains("auto set")) | result.contains("automobile")) {
+                sendBTMessage("AUTOSET EXECUTE\n\r");
+                break;
+            }
+              else if (result.contains("reset")) {
+                sendBTMessage("AUTOSET UNDO\n\r");
                 break;
             }
         }
