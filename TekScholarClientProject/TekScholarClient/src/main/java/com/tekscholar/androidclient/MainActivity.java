@@ -502,60 +502,60 @@ public class MainActivity extends Activity
             captureImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mZoomView.generatePoints();
-
-                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
-                    String imageFileName = timeStamp + "_" + "tekShot";
-
-                    File storageDir = new File(
-                            Environment.getExternalStoragePublicDirectory(
-                                    Environment.DIRECTORY_PICTURES
-                            ),
-                            "TekShots"
-                    );
-
-                    if (storageDir != null) {
-                        if (! storageDir.mkdirs()) {
-                            if (! storageDir.exists()){
-                                Log.d("CameraSample", "failed to create directory");
-                                return;
-                            }
-                        }
-                    }
-
-                    try {
-                        File f = File.createTempFile(imageFileName, ".jpeg", storageDir);
-
-
-                        Bitmap bitmap = Bitmap.createBitmap(mZoomView.getWidth(), mZoomView.getHeight(), Bitmap.Config.ARGB_8888);
-
-                        mZoomView.draw(new Canvas(bitmap));
-                        try {
-                            OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
-                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
-                        } catch (IOException e) {
-                            Log.w("ADJ", e);
-                        }
-                        //MainActivity.galleryAddPic(f);
-                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
-                        //File f = new File(mCurrentPhotoPath);
-                        Uri contentUri = Uri.fromFile(f);
-                        mediaScanIntent.setData(contentUri);
-                        getActivity().sendBroadcast(mediaScanIntent);
-                    } catch (Exception e){
-                        e.printStackTrace();
-                    }
-
+//                    mZoomView.generatePoints();
+//
+//                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
+//                    String imageFileName = timeStamp + "_" + "tekShot";
+//
+//                    File storageDir = new File(
+//                            Environment.getExternalStoragePublicDirectory(
+//                                    Environment.DIRECTORY_PICTURES
+//                            ),
+//                            "TekShots"
+//                    );
+//
+//                    if (storageDir != null) {
+//                        if (! storageDir.mkdirs()) {
+//                            if (! storageDir.exists()){
+//                                Log.d("CameraSample", "failed to create directory");
+//                                return;
+//                            }
+//                        }
+//                    }
+//
+//                    try {
+//                        File f = File.createTempFile(imageFileName, ".jpeg", storageDir);
+//
+//
+//                        Bitmap bitmap = Bitmap.createBitmap(mZoomView.getWidth(), mZoomView.getHeight(), Bitmap.Config.ARGB_8888);
+//
+//                        mZoomView.draw(new Canvas(bitmap));
+//                        try {
+//                            OutputStream out = new BufferedOutputStream(new FileOutputStream(f));
+//                            bitmap.compress(Bitmap.CompressFormat.JPEG, 100, out);
+//                        } catch (IOException e) {
+//                            Log.w("ADJ", e);
+//                        }
+//                        //MainActivity.galleryAddPic(f);
+//                        Intent mediaScanIntent = new Intent(Intent.ACTION_MEDIA_SCANNER_SCAN_FILE);
+//                        //File f = new File(mCurrentPhotoPath);
+//                        Uri contentUri = Uri.fromFile(f);
+//                        mediaScanIntent.setData(contentUri);
+//                        getActivity().sendBroadcast(mediaScanIntent);
+//                    } catch (Exception e){
+//                        e.printStackTrace();
+//                    }
+//
                 }
             });
 
             refreshImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-                    mZoomView.generatePoints();
-                    Canvas temp = mZoomViewHolder.lockCanvas();
-                    mZoomView.draw(temp);
-                    mZoomViewHolder.unlockCanvasAndPost(temp);
+//                    mZoomView.generatePoints();
+//                    Canvas temp = mZoomViewHolder.lockCanvas();
+//                    mZoomView.draw(temp);
+//                    mZoomViewHolder.unlockCanvasAndPost(temp);
                     //mZoomView.paint();
                 }
             });
@@ -981,12 +981,49 @@ public class MainActivity extends Activity
     @Override
     public void onResults(ContinuousDictationFragment delegate, ArrayList<String> dictationResults) {
         result = dictationResults.get(0);
-        Toast.makeText(this,result,Toast.LENGTH_LONG).show();
-        if(result.contains("start")){
-//            btConnection.sendMessage("FPAnel:PRESS RUNSTOP");
-        } else if (result.contains("stop")){
-//            btConnection.sendMessage("FPAnel:PRESS runstop");
+        for(int i = 0; i < dictationResults.size(); i++) {
+            result = dictationResults.get(i).toLowerCase();
+            //Toast.makeText(this, result, Toast.LENGTH_LONG).show();
+            if (result.contains("start")) {
+                sendBTMessage("FPAnel:PRESS RUNSTOP\n\r");
+                break;
+            } else if (result.contains("stop") | result.contains("run")) {
+                sendBTMessage("FPAnel:PRESS runstop\n\r");
+                break;
+            }
+            if (result.contains("start")) {
+                sendBTMessage("FPAnel:PRESS RUNSTOP\n\r");
+                break;
+            } else if (result.contains("stop")) {
+                sendBTMessage("FPAnel:PRESS runstop\n\r");
+                break;
+            } else if (result.contains("channel 1 off") | result.contains("channel one off") | result.contains("channel one of") | result.contains("channel 1 of")) {
+                sendBTMessage("SELECT:CH1 0\n\r");
+                break;
+            } else if (result.contains("channel 1 on") | result.contains("channel one on")) {
+                sendBTMessage("SELECT:CH1 1\n\r");
+                break;
+            } else if (result.contains("channel 2 off") | result.contains("channel two off") | result.contains("channel two of") | result.contains("channel 2 of")) {
+                sendBTMessage("SELECT:CH2 0\n\r");
+                break;
+            } else if (result.contains("channel 2 on") | result.contains("channel two on")) {
+                sendBTMessage("SELECT:CH2 1\n\r");
+                break;
+            } else if (result.contains("channel 3 off") | result.contains("channel three off") | result.contains("channel three of") | result.contains("channel 3 of")) {
+                sendBTMessage("SELECT:CH3 0\n\r");
+                break;
+            } else if (result.contains("channel 3 on") | result.contains("channel three on")) {
+                sendBTMessage("SELECT:CH3 1\n\r");
+                break;
+            } else if (result.contains("channel 4 off") | result.contains("channel four off") | result.contains("channel four of") | result.contains("channel 4 of")) {
+                sendBTMessage("SELECT:CH4 0\n\r");
+                break;
+            } else if (result.contains("channel 4 on") | result.contains("channel four on")) {
+                sendBTMessage("SELECT:CH4 1\n\r");
+                break;
+            }
         }
+
     }
 
     @Override

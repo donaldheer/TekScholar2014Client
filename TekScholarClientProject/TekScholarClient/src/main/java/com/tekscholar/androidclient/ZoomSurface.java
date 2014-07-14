@@ -475,27 +475,28 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         surfaceScalarY = surfaceHeight/255;
         surfaceScalarX = surfaceWidth/5000;
 
-
-        for(int k = 0; k < dataPoints.length/2 - 1;k++){
+        if(dataPoints != null) {
+            for (int k = 0; k < dataPoints.length / 2 - 1; k++) {
 //            Log.d("ADJ", Integer.toString(k));
-            if((dataPoints[k] != 0) | (dataPoints[k + 1] != 0) | (dataPoints[k + 1] != 0) | (dataPoints[k + 1] != 0)) {
-                Log.d("ADJ", ":(");
+                if ((dataPoints[k] != 0) | (dataPoints[k + 1] != 0) | (dataPoints[k + 2] != 0) | (dataPoints[k + 3] != 0)) {
+                    Log.d("ADJ", ":(");
 
-                if ((((surfaceScalarX * dataPoints[k * 2]) != 0) & (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 1])) != 0) & (((surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 2])) != 0) & (((surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 3])) != 0)))) {
-                    canvas.drawLine((surfaceScalarX * dataPoints[k * 2]), (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 1])), (surfaceScalarX * dataPoints[k * 2 + 2]), (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 3])), channel1Paint);
+                    if ((((surfaceScalarX * dataPoints[k * 2]) != 0) & (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 1])) != 0) & (((surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 2])) != 0) & (((surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 3])) != 0)))) {
+                        canvas.drawLine((surfaceScalarX * dataPoints[k * 2]), (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 1])), (surfaceScalarX * dataPoints[k * 2 + 2]), (surfaceHeight - (surfaceScalarY * dataPoints[k * 2 + 3])), channel1Paint);
+                    }
                 }
+                //k = k+2;
             }
-            //k = k+2;
         }
 
         Log.d("ADJ", Float.toString((float) j - mGridSize) + " " + Float.toString((float) i) + " " + Float.toString((float) (y_dim - i)));
 
-        Log.d("ADJ", Float.toString(dataPoints[1]));
+//        Log.d("ADJ", Float.toString(dataPoints[1]));
 
-        canvas.drawLines(dataPoints, channel1Paint);
+//        canvas.drawLines(dataPoints, channel1Paint);
         //canvas.drawLine(dataPoints[2], dataPoints[3], dataPoints[4], dataPoints[5], channel1Paint);
 
-        canvas.drawPoints(dataPoints, channel1Paint);
+//        canvas.drawPoints(dataPoints, channel1Paint);
 
 
     }
@@ -563,53 +564,53 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
 
     @Override
     public void onScaleEnd(ScaleGestureDetector scaleGestureDetector) {
-    //Log.d(TAG, "It scaled me to " + Float.toString(mScale));
-    xScale = ((scaleGestureDetector.getCurrentSpanX() - xScalePrev)/xScalePrev) + 1;
-    yScale = ((scaleGestureDetector.getCurrentSpanY() - yScalePrev)/yScalePrev) + 1;
-    Log.d(TAG, "xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
+        //Log.d(TAG, "It scaled me to " + Float.toString(mScale));
+        xScale = ((scaleGestureDetector.getCurrentSpanX() - xScalePrev)/xScalePrev) + 1;
+        yScale = ((scaleGestureDetector.getCurrentSpanY() - yScalePrev)/yScalePrev) + 1;
+        Log.d(TAG, "xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
 
-    int selectedCH = 1;
-    //Send scale update command to pi
-    //MainActivity.btConnection.sendTestMessage();
-    //MainActivity.btConnection.readMessage();
-    //MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE?\n");
-    String zoomCommand  = MainActivity.btConnection.receiveMessage();
-    String _zoomCommand = "";
-    String _zoomCommand2 = "";
-    MainActivity.btConnection.sendMessage("CH" + Integer.toString(selectedCH) + ":SCALE?\n");
-    String scaleCommand = MainActivity.btConnection.receiveMessage();
-    String _scaleCommand = "";
-    String _scaleCommand2 = "";
-    Log.d("ADJ", "zoomCommand = " + zoomCommand);
-    Log.d("ADJ", "scaleCommand = " + scaleCommand);
+        int selectedCH = 1;
+        //Send scale update command to pi
+        //MainActivity.btConnection.sendTestMessage();
+        //MainActivity.btConnection.readMessage();
+        //MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE?\n");
+        String zoomCommand  = MainActivity.btConnection.receiveMessage();
+        String _zoomCommand = "";
+        String _zoomCommand2 = "";
+        MainActivity.btConnection.sendMessage("CH" + Integer.toString(selectedCH) + ":SCALE?\n");
+        String scaleCommand = MainActivity.btConnection.receiveMessage();
+        String _scaleCommand = "";
+        String _scaleCommand2 = "";
+        Log.d("ADJ", "zoomCommand = " + zoomCommand);
+        Log.d("ADJ", "scaleCommand = " + scaleCommand);
 
 
-    int vertPosition = zoomCommand.indexOf("HORIZONTAL:SCALE ");
-    try {
-        _zoomCommand = zoomCommand.substring(vertPosition + 17, vertPosition + 21);
-        _zoomCommand2 = zoomCommand.substring(zoomCommand.length() - 3);
-        if(xScale > 1) {
-            _zoomCommand = Float.toString((float) 1 * 1/xScale * Float.valueOf(_zoomCommand));
-        } else {
-            _zoomCommand = Float.toString((float) 1 * 1/xScale * Float.valueOf(_zoomCommand));
-        }
-        Log.d("ADJ", "zoom command 1: " + _zoomCommand + "\nzoom command 2: " + _zoomCommand2);
+        int vertPosition = zoomCommand.indexOf("HORIZONTAL:SCALE ");
+        try {
+            _zoomCommand = zoomCommand.substring(vertPosition + 17, vertPosition + 21);
+            _zoomCommand2 = zoomCommand.substring(zoomCommand.length() - 3);
+            if(xScale > 1) {
+                _zoomCommand = Float.toString((float) 1 * 1/xScale * Float.valueOf(_zoomCommand));
+            } else {
+                _zoomCommand = Float.toString((float) 1 * 1/xScale * Float.valueOf(_zoomCommand));
+            }
+            Log.d("ADJ", "zoom command 1: " + _zoomCommand + "\nzoom command 2: " + _zoomCommand2);
 //        MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE " + _zoomCommand + _zoomCommand2 + '\n');
 //        //MainActivity.btConnection.sendMessage("xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
-    } catch(Exception e){
-        e.printStackTrace();
-    }
-
-    int horizPosition = scaleCommand.indexOf("CH" + Integer.toString(selectedCH) + ":SCALE ");
-    try {
-        _scaleCommand = scaleCommand.substring(horizPosition + 10, horizPosition + 14);
-        _scaleCommand2 = scaleCommand.substring(scaleCommand.length() - 3);
-        if(yScale > 1) {
-            _scaleCommand = Float.toString((float) 1 * 1/yScale * Float.valueOf(_scaleCommand));
-        } else {
-            _scaleCommand = Float.toString((float) 1 * 1/yScale * Float.valueOf(_scaleCommand));
+        } catch(Exception e){
+            e.printStackTrace();
         }
-        Log.d("ADJ", "scale command 1: " + _scaleCommand + "\nscale command 2: " + _scaleCommand2);
+
+        int horizPosition = scaleCommand.indexOf("CH" + Integer.toString(selectedCH) + ":SCALE ");
+        try {
+            _scaleCommand = scaleCommand.substring(horizPosition + 10, horizPosition + 14);
+            _scaleCommand2 = scaleCommand.substring(scaleCommand.length() - 3);
+            if(yScale > 1) {
+                _scaleCommand = Float.toString((float) 1 * 1/yScale * Float.valueOf(_scaleCommand));
+            } else {
+                _scaleCommand = Float.toString((float) 1 * 1/yScale * Float.valueOf(_scaleCommand));
+            }
+            Log.d("ADJ", "scale command 1: " + _scaleCommand + "\nscale command 2: " + _scaleCommand2);
 //        MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE " + _zoomCommand + _zoomCommand2 + '\n');
 //        //MainActivity.btConnection.sendMessage("xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
         } catch(Exception e){
@@ -621,10 +622,10 @@ public class ZoomSurface extends SurfaceView implements GestureDetector.OnGestur
         MainActivity.btConnection.sendMessage("HORIZONTAL:SCALE " + _zoomCommand + _zoomCommand2 + ";" +
                 "CH" + Integer.toString(selectedCH) + ":SCALE " + _scaleCommand + _scaleCommand2 + '\n');
         //MainActivity.btConnection.sendMessage("xScale = " + Float.toString(xScale) + " yScale = " + Float.toString(yScale));
-    xScale = 1;
-    yScale = 1;
-    xScalePrev = 0;
-    yScalePrev = 0;
+        xScale = 1;
+        yScale = 1;
+        xScalePrev = 0;
+        yScalePrev = 0;
 
     }
 
