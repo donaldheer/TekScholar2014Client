@@ -11,15 +11,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Bitmap;
-import android.graphics.Canvas;
-import android.media.Image;
-import android.net.Uri;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.nfc.Tag;
 import android.os.Bundle;
-import android.os.Environment;
 import android.os.Handler;
 import android.os.Message;
 import android.os.Parcelable;
@@ -31,7 +26,6 @@ import android.view.MenuItem;
 import android.view.SurfaceHolder;
 import android.view.View;
 import android.view.ViewGroup;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.CompoundButton;
 import android.widget.ImageButton;
@@ -40,14 +34,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 
-import java.io.BufferedOutputStream;
-import java.io.File;
-import java.io.FileOutputStream;
-import java.io.IOException;
-import java.io.OutputStream;
 import java.io.UnsupportedEncodingException;
-import java.text.SimpleDateFormat;
-import java.util.Date;
 
 import java.util.ArrayList;
 
@@ -482,6 +469,11 @@ public class MainActivity extends Activity
             captureImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainActivity.COMMAND, ":AUTOSET EXECUTE");
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
 //                    mZoomView.generatePoints();
 //
 //                    String timeStamp = new SimpleDateFormat("yyyyMMdd_HHmmss").format(new Date());
@@ -526,12 +518,18 @@ public class MainActivity extends Activity
 //                        e.printStackTrace();
 //                    }
 //
+
                 }
             });
 
             refreshImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
+                    Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainActivity.COMMAND, ":FPANEL:PRESS SAVEBUTTON");
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
 //                    mZoomView.generatePoints();
 //                    Canvas temp = mZoomViewHolder.lockCanvas();
 //                    mZoomView.draw(temp);
@@ -543,7 +541,11 @@ public class MainActivity extends Activity
             startStopImage.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View view) {
-
+                    Message msg = mHandler.obtainMessage(MainActivity.COMMAND_SEND);
+                    Bundle bundle = new Bundle();
+                    bundle.putString(MainActivity.COMMAND, ":FPANEL:PRESS RUNSTOP");
+                    msg.setData(bundle);
+                    mHandler.sendMessage(msg);
                 }
             });
 
@@ -794,17 +796,17 @@ public class MainActivity extends Activity
 //                            mTitle.setText(R.string.title_connected_to);
 //                            mTitle.append(mConnectedDeviceName);
 //                            mConversationArrayAdapter.clear();
-                            getActionBar().setIcon(R.drawable.ic_launcher);
+                            getActionBar().setIcon(R.drawable.greenwave);
                             break;
                         case BluetoothChatService.STATE_CONNECTING:
 //                            mTitle.setText(R.string.title_connecting);
-                            getActionBar().setIcon(R.drawable.tek_button_1_color);
+                            getActionBar().setIcon(R.drawable.yellowwave);
                             break;
                         case BluetoothChatService.STATE_LISTEN:
                             Log.d("ADJ", "Listening");
                             break;
                         case BluetoothChatService.STATE_NONE:
-                            getActionBar().setIcon(R.drawable.ic_launcher_red);
+                            getActionBar().setIcon(R.drawable.redwave);
 //                            mTitle.setText(R.string.title_not_connected);
 
                             break;
